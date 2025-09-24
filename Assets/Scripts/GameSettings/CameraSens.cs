@@ -8,14 +8,12 @@ public class CameraSens : MonoBehaviour
     [Header("Sensitivity")]
     [Range(0.1f, 20f)]
     public float mouseSensitivity = 1f; // editable in inspector
-    public float sensitivityMultiplier = 40f; // optional multiplier for feel
 
     private float lastAppliedSensitivity = -1f;
 
     private void Update()
     {
-        // Only apply if the inspector value changed
-        float scaledSens = mouseSensitivity * sensitivityMultiplier;
+        float scaledSens = mouseSensitivity;
         if (Mathf.Abs(scaledSens - lastAppliedSensitivity) > 0.001f)
         {
             ApplySensitivity(scaledSens);
@@ -33,7 +31,6 @@ public class CameraSens : MonoBehaviour
         {
             var c = axisController.Controllers[i];
 
-            // Invert Y axis (usually index 1) and leave X axis positive
             bool isVertical = (i == 1);
             float gain = isVertical ? -Mathf.Abs(newSens) : Mathf.Abs(newSens);
 
