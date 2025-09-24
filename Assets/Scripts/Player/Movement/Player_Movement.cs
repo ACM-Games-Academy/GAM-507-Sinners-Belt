@@ -23,16 +23,10 @@ public class PlayerControls : MonoBehaviour
 
     [SerializeField] private float currentStamina;
 
-    [Header("Attack Settings")]
-
-
-
     [Header("UI Components")]
     [SerializeField] private Slider staminaSlider;
     [SerializeField] private Gradient staminaGradient;
     [SerializeField] private Image staminaFillImage;
-
-
 
     private CharacterController controller;
     private PlayerInputActions inputActions;
