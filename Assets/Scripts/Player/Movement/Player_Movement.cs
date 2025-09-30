@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerControls : MonoBehaviour
@@ -69,30 +70,57 @@ public class PlayerControls : MonoBehaviour
         currentStamina = maxStamina;
     }
 
-    private void OnEnable()
+        private void OnEnable()
     {
         inputActions.Enable();
 
         // Movement input
-        inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        inputActions.Player.Move.canceled += _ => moveInput = Vector2.zero;
+        inputActions.Player.Move.performed += OnMovePerformed;
+        inputActions.Player.Move.canceled += OnMoveCanceled;
 
         // Jump input
-        inputActions.Player.Jump.performed += _ => isJumpPressed = true;
+        inputActions.Player.Jump.performed += OnJump;
 
         // Sprint input
-        inputActions.Player.Sprint.performed += _ => sprintHeld = true;
-        inputActions.Player.Sprint.canceled += _ => sprintHeld = false;
+        inputActions.Player.Sprint.performed += OnSprintStarted;
+        inputActions.Player.Sprint.canceled += OnSprintCanceled;
     }
 
-    private void OnDisable() //Some cleanup to prevent memory leaks
+    private void OnDisable()
     {
-        inputActions.Player.Move.performed -= ctx => moveInput = ctx.ReadValue<Vector2>();
-        inputActions.Player.Move.canceled -= _ => moveInput = Vector2.zero;
-        inputActions.Player.Jump.performed -= _ => isJumpPressed = true;
-        inputActions.Player.Sprint.performed -= _ => sprintHeld = true;
-        inputActions.Player.Sprint.canceled -= _ => sprintHeld = false;
+        // Remove handlers properly
+        inputActions.Player.Move.performed -= OnMovePerformed;
+        inputActions.Player.Move.canceled -= OnMoveCanceled;
+        inputActions.Player.Jump.performed -= OnJump;
+        inputActions.Player.Sprint.performed -= OnSprintStarted;
+        inputActions.Player.Sprint.canceled -= OnSprintCanceled;
+
         inputActions.Disable();
+    }
+
+        private void OnMovePerformed(InputAction.CallbackContext ctx)
+    {
+        moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext ctx)
+    {
+        moveInput = Vector2.zero;
+    }
+
+    private void OnJump(InputAction.CallbackContext ctx)
+    {
+        isJumpPressed = true;
+    }
+
+    private void OnSprintStarted(InputAction.CallbackContext ctx)
+    {
+        sprintHeld = true;
+    }
+
+    private void OnSprintCanceled(InputAction.CallbackContext ctx)
+    {
+        sprintHeld = false;
     }
 
     private void Update()
