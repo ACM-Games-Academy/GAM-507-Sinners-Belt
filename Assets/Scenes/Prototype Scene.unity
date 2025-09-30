@@ -580,10 +580,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 467856570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d9ecdd742093d045b7d18f68364f319, type: 3}
+  m_Script: {fileID: 11500000, guid: 8fb22bdf0b7792a41aaffd32fb38f693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 20
+  axisController: {fileID: 795969847}
+  mouseSensitivity: 1
 --- !u!1 &795969846
 GameObject:
   m_ObjectHideFlags: 0
