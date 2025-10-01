@@ -70,7 +70,7 @@ public class PlayerControls : MonoBehaviour
         currentStamina = maxStamina;
     }
 
-        private void OnEnable()
+    private void OnEnable()
     {
         inputActions.Enable();
 
@@ -98,7 +98,7 @@ public class PlayerControls : MonoBehaviour
         inputActions.Disable();
     }
 
-        private void OnMovePerformed(InputAction.CallbackContext ctx)
+    private void OnMovePerformed(InputAction.CallbackContext ctx)
     {
         moveInput = ctx.ReadValue<Vector2>();
     }
