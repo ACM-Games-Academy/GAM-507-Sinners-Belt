@@ -13,6 +13,8 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private float gravity = -9.81f;
 
+    [SerializeField] public float currentSpeed;
+
     [SerializeField] private bool isSprinting;
 
     [Header("Stamina Settings")]
@@ -127,6 +129,10 @@ public class PlayerControls : MonoBehaviour
     {
         HandleStamina();
         HandleMovement();
+
+        //Get current speed for animation
+        currentSpeed = controller.velocity.magnitude;
+        animator.SetFloat("Speed", currentSpeed);
     }
 
     private void HandleMovement()
