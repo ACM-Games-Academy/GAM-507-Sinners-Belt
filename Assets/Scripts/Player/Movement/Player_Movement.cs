@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
@@ -14,28 +13,22 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
 
     [SerializeField] public float currentSpeed;
-
     [SerializeField] private bool isSprinting;
 
     [Header("Stamina Settings")]
     [SerializeField] private float maxStamina = 5f;
     [SerializeField] private float staminaDrainRate = 1f;
     [SerializeField] private float staminaRegenRate = 2f;
-
-    [SerializeField] private float sprintStaminaThreshold = 0.4f;
+    [SerializeField] private float sprintStaminaThreshold = 0f;
+    [SerializeField] private float doubleJumpCost = 1.5f;
+    [SerializeField] private float staminaRegenDelay = 1f;
 
     [SerializeField] private float currentStamina;
+    private float regenTimer = 0f;
 
-    [Header("Attack Settings")]
-
-
-
-    [Header("UI Components")]
-    [SerializeField] private Slider staminaSlider;
-    [SerializeField] private Gradient staminaGradient;
-    [SerializeField] private Image staminaFillImage;
-
-
+    [Header("Double Jump Settings")]
+    [SerializeField] private int maxJumps = 2;
+    private int jumpCount = 0;
 
     private CharacterController controller;
     private PlayerInputActions inputActions;
@@ -46,61 +39,37 @@ public class PlayerControls : MonoBehaviour
     private bool sprintHeld;
 
     private Transform cam;
-
     public Animator animator;
-    private void Start()
-    {
-        if (staminaSlider != null)
-        {
-            staminaSlider.minValue = 0f;
-            staminaSlider.maxValue = maxStamina;
-            staminaSlider.value = currentStamina;
-            if (staminaFillImage != null && staminaGradient != null)
-                staminaFillImage.color = staminaGradient.Evaluate(currentStamina / maxStamina);
-        }
-    }
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         inputActions = new PlayerInputActions();
-
-        // Ensure the camera is set to the main camera
         cam = Camera.main.transform;
-
-        // Fill stamina at start
         currentStamina = maxStamina;
     }
 
-        private void OnEnable()
+    private void OnEnable()
     {
         inputActions.Enable();
-
-        // Movement input
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
-
-        // Jump input
         inputActions.Player.Jump.performed += OnJump;
-
-        // Sprint input
         inputActions.Player.Sprint.performed += OnSprintStarted;
         inputActions.Player.Sprint.canceled += OnSprintCanceled;
     }
 
     private void OnDisable()
     {
-        // Remove handlers properly
         inputActions.Player.Move.performed -= OnMovePerformed;
         inputActions.Player.Move.canceled -= OnMoveCanceled;
         inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.Sprint.performed -= OnSprintStarted;
         inputActions.Player.Sprint.canceled -= OnSprintCanceled;
-
         inputActions.Disable();
     }
 
-        private void OnMovePerformed(InputAction.CallbackContext ctx)
+    private void OnMovePerformed(InputAction.CallbackContext ctx)
     {
         moveInput = ctx.ReadValue<Vector2>();
     }
@@ -130,16 +99,15 @@ public class PlayerControls : MonoBehaviour
         HandleStamina();
         HandleMovement();
 
-        //Get current speed for animation
         currentSpeed = controller.velocity.magnitude;
-        animator.SetFloat("Speed", currentSpeed);
+        if (animator != null)
+            animator.SetFloat("Speed", currentSpeed);
     }
 
     private void HandleMovement()
     {
         float speed = isSprinting ? sprintSpeed : walkSpeed;
 
-        // Get camera directions, ignore vertical tilt
         Vector3 camForward = cam.forward;
         camForward.y = 0f;
         camForward.Normalize();
@@ -148,7 +116,6 @@ public class PlayerControls : MonoBehaviour
         camRight.y = 0f;
         camRight.Normalize();
 
-        // Movement relative to camera
         Vector3 motion = camRight * moveInput.x + camForward * moveInput.y;
 
         if (motion.magnitude > 1f)
@@ -156,27 +123,34 @@ public class PlayerControls : MonoBehaviour
 
         motion *= speed;
 
-        // Gravity / Jump
         if (controller.isGrounded)
         {
             velocity.y = -1f;
+            jumpCount = 0;
+
             if (isJumpPressed)
             {
                 velocity.y = jumpForce;
+                jumpCount = 1;
                 isJumpPressed = false;
             }
         }
         else
         {
+            if (isJumpPressed && jumpCount < maxJumps && currentStamina >= doubleJumpCost)
+            {
+                velocity.y = jumpForce;
+                currentStamina -= doubleJumpCost;
+                jumpCount++;
+                isJumpPressed = false;
+            }
+
             velocity.y += gravity * Time.deltaTime;
         }
 
         motion.y = velocity.y;
-
-        // Actually move
         controller.Move(motion * Time.deltaTime);
 
-        // Rotate player root to face camera's horizontal direction
         Vector3 lookDir = cam.forward;
         lookDir.y = 0f;
         if (lookDir.sqrMagnitude > 0.01f)
@@ -185,32 +159,37 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-
-
     private void HandleStamina()
     {
-        bool canSprint = sprintHeld && moveInput.magnitude > 0.1f && currentStamina > sprintStaminaThreshold;
+        bool isMoving = moveInput.magnitude > 0.1f;
+        bool canSprint = sprintHeld && isMoving && currentStamina > sprintStaminaThreshold;
 
         if (canSprint)
         {
             isSprinting = true;
             currentStamina -= staminaDrainRate * Time.deltaTime;
             currentStamina = Mathf.Max(currentStamina, 0f);
+            regenTimer = 0f;
         }
         else
         {
             isSprinting = false;
-            currentStamina += staminaRegenRate * Time.deltaTime;
-            currentStamina = Mathf.Min(currentStamina, maxStamina);
+
+            if (currentStamina < maxStamina)
+            {
+                regenTimer += Time.deltaTime;
+                if (regenTimer >= staminaRegenDelay)
+                {
+                    currentStamina += staminaRegenRate * Time.deltaTime;
+                    currentStamina = Mathf.Min(currentStamina, maxStamina);
+                }
+            }
         }
 
-        // Update UI
-        if (staminaSlider != null)
+        if (currentStamina <= 0f)
         {
-            staminaSlider.value = currentStamina;
-            if (staminaFillImage != null && staminaGradient != null)
-                staminaFillImage.color = staminaGradient.Evaluate(currentStamina / maxStamina);
+            isSprinting = false;
+            sprintHeld = false;
         }
     }
 }
-
