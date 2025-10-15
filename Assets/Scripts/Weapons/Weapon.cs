@@ -3,16 +3,15 @@ using System.Collections;
 
 public abstract class Weapon : MonoBehaviour
 {
-    [Header("Weapon Stats")]
+    [Header("Weapon Setup")]
     public Transform muzzlePoint;
     public LayerMask hitMask;
-    public float range = 1000f;
-    public float fireRate = 0.2f;
     public GameObject bulletTrailPrefab;
 
-    protected float lastFireTime;
-    protected IFireMode fireMode;
+    [Header("Fire Mode Data")]
+    public FireModeData fireModeData;
 
+    protected IFireMode fireMode;
     protected Camera cam;
 
     protected virtual void Awake()
@@ -23,35 +22,24 @@ public abstract class Weapon : MonoBehaviour
     public virtual void Initialize(IFireMode mode)
     {
         fireMode = mode;
-        fireMode.Initialize(this);
+        fireMode.Initialize(this, fireModeData);
     }
 
     public virtual void Fire()
     {
-        if (Time.time - lastFireTime < fireRate)
-            return;
-
-        lastFireTime = Time.time;
-        fireMode.Fire();
+        fireMode?.Fire();
     }
 
-    /// <summary>
-    /// Gets the target point based on the camera center ray (better for first-person shooters)
-    /// </summary>
     public Vector3 GetCameraTargetPoint()
     {
+        float range = fireMode?.Range ?? 1000f;
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, range, hitMask))
-        {
             return hit.point;
-        }
 
         return ray.origin + ray.direction * range;
     }
 
-    /// <summary>
-    /// Handles visual trail for hitscan tracers (so players get visual feedback on firing)
-    /// </summary>
     public void SpawnTracer(Vector3 start, Vector3 end)
     {
         if (!bulletTrailPrefab) return;
@@ -70,10 +58,7 @@ public abstract class Weapon : MonoBehaviour
         {
             traveled += speed * Time.deltaTime;
             float progress = traveled / distance;
-            
-            Vector3 currentPos = Vector3.Lerp(start, end, progress);
-            trail.position = currentPos;
-
+            trail.position = Vector3.Lerp(start, end, progress);
             yield return null;
         }
 

@@ -13,7 +13,7 @@ public class DualFireGun : Weapon
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
         {
             Initialize(primary);
             Fire();
