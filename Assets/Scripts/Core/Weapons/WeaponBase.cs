@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class Weapon : MonoBehaviour
+public abstract class WeaponBase : MonoBehaviour
 {
     [Header("Weapon Setup")]
     public Transform muzzlePoint;
     public LayerMask hitMask;
     public GameObject bulletTrailPrefab;
 
-    [Header("Fire Mode Data")]
-    public FireModeData fireModeData;
+    [Header("Weapon Stats")]
+    public float maxAmmo;
+    [SerializeField] protected float ammo;
 
     protected IFireMode fireMode;
     protected Camera cam;
@@ -17,17 +18,27 @@ public abstract class Weapon : MonoBehaviour
     protected virtual void Awake()
     {
         cam = Camera.main;
+        ammo = maxAmmo;
     }
 
     public virtual void Initialize(IFireMode mode)
     {
         fireMode = mode;
-        fireMode.Initialize(this, fireModeData);
+        fireMode.Initialize(this);
     }
 
     public virtual void Fire()
     {
         fireMode?.Fire();
+    }
+
+    public virtual bool TryUseAmmo(float count)
+    {
+        if (ammo - count < 0)
+            return false;
+
+        ammo -= count;
+        return true;
     }
 
     public Vector3 GetCameraTargetPoint()
@@ -43,12 +54,12 @@ public abstract class Weapon : MonoBehaviour
     public void SpawnTracer(Vector3 start, Vector3 end)
     {
         if (!bulletTrailPrefab) return;
-
+        
         Transform trail = Instantiate(bulletTrailPrefab).transform;
         StartCoroutine(AnimateTracer(trail, start, end));
     }
 
-    private IEnumerator AnimateTracer(Transform trail, Vector3 start, Vector3 end)
+    public IEnumerator AnimateTracer(Transform trail, Vector3 start, Vector3 end)
     {
         float distance = Vector3.Distance(start, end);
         float speed = 200f;

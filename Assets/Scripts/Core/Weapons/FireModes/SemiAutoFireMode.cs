@@ -2,23 +2,28 @@ using UnityEngine;
 
 public class SemiAutoFireMode : IFireMode
 {
-    public float FireRate => data.fireRate;
+    public float FireRate => 1f / data.fireRate;
     public float Damage => data.damage;
     public float Range => data.range;
+    public float AmmoConsumption => data.ammoConsumption;
 
-    private Weapon weapon;
-    private FireModeData data;
+    private WeaponBase weapon;
+    private readonly SemiAutoFireModeData data;
     private float lastFireTime;
 
-    public void Initialize(Weapon weapon, FireModeData data)
+    public SemiAutoFireMode(SemiAutoFireModeData fireModeData)
+    {
+        data = fireModeData;
+    }
+
+    public void Initialize(WeaponBase weapon)
     {
         this.weapon = weapon;
-        this.data = data;
     }
 
     public void Fire()
     {
-        if (Time.time - lastFireTime < FireRate)
+        if (Time.time - lastFireTime < FireRate || !weapon.TryUseAmmo(AmmoConsumption))
             return;
 
         lastFireTime = Time.time;
@@ -29,15 +34,27 @@ public class SemiAutoFireMode : IFireMode
 
         if (Physics.Raycast(muzzlePos, direction, out RaycastHit hit, Range, weapon.hitMask))
         {
-            // TODO: Damage logic
             weapon.SpawnTracer(muzzlePos, hit.point);
+
+            if (hit.collider.TryGetComponent<IImpactable>(out IImpactable component))
+            {
+                component.OnImpact(new ImpactInfo
+                {
+                    Point = hit.point,
+                    Normal = hit.normal,
+                    Damage = Damage,
+                    Source = weapon.gameObject,
+                    Instigator = weapon.gameObject,
+                    DamageType = DamageType.Physical
+                });
+            }
         }
         else
         {
             Vector3 missPoint = muzzlePos + direction * Range;
             weapon.SpawnTracer(muzzlePos, missPoint);
         }
-
+        
         if (data.fireSound)
             AudioSource.PlayClipAtPoint(data.fireSound, muzzlePos);
 
