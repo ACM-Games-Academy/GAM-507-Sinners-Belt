@@ -1,4 +1,6 @@
 using UnityEngine;
+using System;
+using System.Collections;
 
 [DisallowMultipleComponent]
 public class AttackComponent : MonoBehaviour, IAttacker
@@ -7,6 +9,8 @@ public class AttackComponent : MonoBehaviour, IAttacker
     public float cooldown = 1.2f;
     public float range = 15f;
     public float bulletSpeed = 40f;
+    public int shotsBeforeReload = 3;
+    public float reloadDuration = 2.5f;
 
     [Header("Ranged Attack")]
     public GameObject projectilePrefab;
@@ -16,8 +20,14 @@ public class AttackComponent : MonoBehaviour, IAttacker
     public float meleeDamage = 10f;
 
     private float lastAttackTime = -999f;
+    private int shotsFired = 0;
+    private bool isReloading = false;
 
-    public bool CanAttack => Time.time >= lastAttackTime + cooldown;
+    public event Action OnReloadStart;
+    public event Action OnReloadEnd;
+
+    public bool CanAttack => !isReloading && Time.time >= lastAttackTime + cooldown;
+    public bool IsReloading => isReloading;
 
     public void TryAttack(Transform target)
     {
@@ -26,43 +36,64 @@ public class AttackComponent : MonoBehaviour, IAttacker
         float dist = Vector3.Distance(transform.position, target.position);
         if (dist > range) return;
 
-        // Aim at target
+        // LOS check
+        if (Physics.Raycast(transform.position + Vector3.up * 1.0f,
+                            (target.position - transform.position).normalized,
+                            out RaycastHit hit, range))
+        {
+            if (!hit.collider.CompareTag("Player")) return;
+        }
+
+        // Aim
         if (firePoint != null)
             firePoint.LookAt(target.position + Vector3.up * 1.0f);
 
+        // Fire
         if (projectilePrefab != null && firePoint != null)
-        {
-            ShootProjectile(firePoint, target);
-        }
+            ShootProjectile(firePoint);
         else
-        {
-            // fallback: instant melee damage
-            var health = target.GetComponent<HealthComponent>();
-            if (health != null)
-                health.TakeDamage(meleeDamage);
-        }
+            TryMelee(target);
 
         lastAttackTime = Time.time;
+        shotsFired++;
+
+        if (shotsFired >= shotsBeforeReload)
+        {
+            StartCoroutine(ReloadRoutine());
+        }
     }
 
-    private void ShootProjectile(Transform origin, Transform target)
+    private void TryMelee(Transform target)
+    {
+        var health = target.GetComponent<HealthComponent>();
+        if (health != null)
+            health.TakeDamage(meleeDamage);
+    }
+
+    private void ShootProjectile(Transform origin)
     {
         GameObject bulletObj = Instantiate(projectilePrefab, origin.position, origin.rotation);
-
-        // Try to apply force/velocity if bullet has a Rigidbody
         if (bulletObj.TryGetComponent<Rigidbody>(out var rb))
         {
             rb.isKinematic = false;
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             rb.linearVelocity = origin.forward * bulletSpeed;
         }
-        else
+        else if (bulletObj.TryGetComponent<Bullet>(out var bullet))
         {
-            // fallback: move via script (handled in bullet)
-            if (bulletObj.TryGetComponent<Bullet>(out var bullet))
-            {
-                bullet.Initialize(origin.forward * bulletSpeed);
-            }
+            bullet.Initialize(origin.forward * bulletSpeed);
         }
+    }
+
+    private IEnumerator ReloadRoutine()
+    {
+        isReloading = true;
+        OnReloadStart?.Invoke();
+
+        yield return new WaitForSeconds(reloadDuration);
+
+        shotsFired = 0;
+        isReloading = false;
+        OnReloadEnd?.Invoke();
     }
 }
