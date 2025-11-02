@@ -29,14 +29,12 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Ignore triggers (like sensors or vision)
-        if (other.isTrigger) return;
-
-        // Optional: deal damage
-        var health = other.GetComponent<HealthComponent>();
-        if (health != null)
+        if (other.TryGetComponent(out IImpactable component))
         {
-            health.TakeDamage(10f); // or pass damage through parameters if needed
+            component.OnImpact(new ImpactInfo
+            {
+                Damage = 10f
+            });
         }
 
         // Optional: spawn impact FX here

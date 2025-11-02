@@ -6,7 +6,7 @@ using System;
 /// Keeps logic intentionally simple: on detect -> follow and attack if in range; on lost -> stop.
 /// </summary>
 [RequireComponent(typeof(HealthComponent))]
-public class EnemyController : MonoBehaviour, IAggro
+public class EnemyController : MonoBehaviour, IAggro, IImpactable
 {
     [Header("Components (auto-assigned if present)")]
     public MovementComponent movement;
@@ -18,6 +18,14 @@ public class EnemyController : MonoBehaviour, IAggro
     public float followStopDistance = 2f; // stop short of exact player position
 
     private Transform player;
+
+    public void OnImpact(ImpactInfo data)
+    {
+        if (TryGetComponent(out IHealth component))
+        {
+            component.TakeDamage(data.Damage);
+        }
+    }
 
     private void Awake()
     {
@@ -34,13 +42,13 @@ public class EnemyController : MonoBehaviour, IAggro
 
         if (health != null)
         {
-            health.OnKilled += HandleDeath;
+            health.OnDeath += HandleDeath;
         }
     }
 
     private void Update()
     {
-        if (health == null || !health.IsAlive) return;
+        if (health == null || !health.IsAlive()) return;
         if (player == null) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
@@ -97,7 +105,7 @@ public class EnemyController : MonoBehaviour, IAggro
         }
         if (health != null)
         {
-            health.OnKilled -= HandleDeath;
+            health.OnDeath -= HandleDeath;
         }
     }
 }

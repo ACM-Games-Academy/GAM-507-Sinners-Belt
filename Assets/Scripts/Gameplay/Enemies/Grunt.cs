@@ -54,7 +54,7 @@ public class GruntController : MonoBehaviour
 
     private void Update()
     {
-        if (!health.IsAlive) return;
+        if (!health.IsAlive()) return;
 
         switch (currentState)
         {
@@ -148,7 +148,7 @@ public class GruntController : MonoBehaviour
     private IEnumerator CoverRoutine()
     {
         // Stay behind cover, peek out periodically
-        while (health.IsAlive)
+        while (health.IsAlive())
         {
             // wait before peeking
             yield return new WaitForSeconds(peekInterval);

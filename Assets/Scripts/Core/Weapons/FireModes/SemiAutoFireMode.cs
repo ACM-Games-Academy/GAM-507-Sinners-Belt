@@ -36,16 +36,11 @@ public class SemiAutoFireMode : IFireMode
         {
             weapon.SpawnTracer(muzzlePos, hit.point);
 
-            if (hit.collider.TryGetComponent<IImpactable>(out IImpactable component))
+            if (hit.collider.TryGetComponent(out IImpactable component))
             {
                 component.OnImpact(new ImpactInfo
                 {
-                    Point = hit.point,
-                    Normal = hit.normal,
                     Damage = Damage,
-                    Source = weapon.gameObject,
-                    Instigator = weapon.gameObject,
-                    DamageType = DamageType.Physical
                 });
             }
         }

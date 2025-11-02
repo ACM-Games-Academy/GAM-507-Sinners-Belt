@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Example of a melee/charger variant that uses the same components.
-/// This script simply configures components — custom movement/charging behavior can be added later.
+/// This script simply configures components ï¿½ custom movement/charging behavior can be added later.
 /// </summary>
 [RequireComponent(typeof(EnemyController))]
 public class Pyro : MonoBehaviour
@@ -10,7 +10,6 @@ public class Pyro : MonoBehaviour
     public float meleeRange = 3f;
     public float meleeCooldown = 2f;
     public float meleeDamage = 30f;
-    public float health = 120f;
 
     private void Reset()
     {
@@ -26,7 +25,5 @@ public class Pyro : MonoBehaviour
         atk.cooldown = meleeCooldown;
         atk.range = meleeRange;
         atk.meleeDamage = meleeDamage;
-        var hp = GetComponent<HealthComponent>();
-        hp.maxHealth = health;
     }
 }
