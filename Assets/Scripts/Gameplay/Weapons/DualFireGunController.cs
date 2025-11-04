@@ -18,5 +18,12 @@ public class DualFireGunController : WeaponBase
             Initialize(semiAuto);
             Fire();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
     }
+
+
 }

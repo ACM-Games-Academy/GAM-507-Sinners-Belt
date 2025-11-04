@@ -11,6 +11,12 @@ public class GameSettings : MonoBehaviour
     // Sensitivity multiplier due to cinemachine using high values for sensitivity
     private const float sensMultiplier = 40f;
 
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     void Awake()
     {
         if (Instance == null) Instance = this;

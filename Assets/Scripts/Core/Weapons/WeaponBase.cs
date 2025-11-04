@@ -32,6 +32,11 @@ public abstract class WeaponBase : MonoBehaviour
         fireMode?.Fire();
     }
 
+    public virtual void Reload()
+    {
+        ammo = maxAmmo;
+    }
+
     public virtual bool TryUseAmmo(float count)
     {
         if (ammo - count < 0)

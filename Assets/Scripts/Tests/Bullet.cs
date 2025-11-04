@@ -4,40 +4,64 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float lifeTime = 5f;
-    private Vector3 velocity;
-    private bool hasVelocity;
+    public float damage = 10f;
+
+    public GameObject instigator;
+
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+    }
 
     private void Start()
     {
         Destroy(gameObject, lifeTime);
     }
 
-    private void Update()
+    public void Initialize(Vector3 velocity, GameObject instigator = null)
     {
-        if (hasVelocity)
-        {
-            transform.position += velocity * Time.deltaTime;
-        }
+        rb.linearVelocity = velocity;
+        this.instigator = instigator;
     }
 
-    // Called by AttackComponent if no Rigidbody exists
-    public void Initialize(Vector3 vel)
+    private void OnCollisionEnter(Collision collision)
     {
-        velocity = vel;
-        hasVelocity = true;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out IImpactable component))
+        if(collision.collider.TryGetComponent(out IImpactable impactable))
         {
-            component.OnImpact(new ImpactInfo
+            impactable.OnImpact(new ImpactInfo
             {
-                Damage = 10f
+                Damage = damage,
+                Instigator = instigator,
+                Point = collision.contacts[0].point,
+                Normal = collision.contacts[0].normal
             });
         }
+        
 
-        // Optional: spawn impact FX here
         Destroy(gameObject);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
 }
