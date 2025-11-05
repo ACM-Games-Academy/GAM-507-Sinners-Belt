@@ -1,10 +1,6 @@
 using UnityEngine;
 using System;
 
-/// <summary>
-/// Minimal orchestrator that composes Movement, Attack and Vision and reacts to player detection.
-/// Keeps logic intentionally simple: on detect -> follow and attack if in range; on lost -> stop.
-/// </summary>
 [RequireComponent(typeof(HealthComponent))]
 public class EnemyController : MonoBehaviour, IAggro, IImpactable
 {
@@ -15,9 +11,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public HealthComponent health;
 
     [Header("Behavior")]
-    public float followStopDistance = 2f; // stop short of exact player position
+    public float followStopDistance = 2f;
 
     private Transform player;
+    public bool HasAggro => player != null && health != null && health.IsAlive();
 
     public void OnImpact(ImpactInfo data)
     {
@@ -48,27 +45,23 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
     private void Update()
     {
-        if (health == null || !health.IsAlive()) return;
-        if (player == null) return;
+        if (!HasAggro) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
 
-        // Attack if in attack range and attacker available
-        if (attack != null && dist <= (attack.range))
+        // Attack if in attack range
+        if (attack != null && dist <= attack.range)
         {
             movement?.StopMovement();
             attack.TryAttack(player);
         }
-        else
+        else if (movement != null)
         {
-            // approach player but stop a little before a collision
-            if (movement != null)
-            {
-                Vector3 targetPos = player.position;
-                Vector3 dir = (transform.position - player.position).normalized;
-                targetPos += dir * followStopDistance;
-                movement.MoveTo(targetPos);
-            }
+            // Approach player but stop before collision
+            Vector3 targetPos = player.position;
+            Vector3 dir = (transform.position - player.position).normalized;
+            targetPos += dir * followStopDistance;
+            movement.MoveTo(targetPos);
         }
     }
 
@@ -83,16 +76,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         movement?.StopMovement();
     }
 
-    // explicit IAggro mapping
-    void IAggro.OnPlayerDetected(Transform playerTransform) => OnPlayerDetected(playerTransform);
-    void IAggro.OnPlayerLost() => OnPlayerLost();
-
     private void HandleDeath()
     {
         movement?.StopMovement();
-        // Simple death behavior: disable this controller and optionally destroy later
         enabled = false;
-        // play effects, disable visuals, etc.
         Destroy(gameObject, 2f);
     }
 
@@ -103,6 +90,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             vision.PlayerDetected -= OnPlayerDetected;
             vision.PlayerLost -= OnPlayerLost;
         }
+
         if (health != null)
         {
             health.OnDeath -= HandleDeath;

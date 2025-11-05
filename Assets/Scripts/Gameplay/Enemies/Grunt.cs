@@ -18,9 +18,9 @@ public class GruntController : MonoBehaviour
     public LayerMask obstacleMask;
 
     [Header("Cover Behavior")]
-    public float peekInterval = 3f;       // seconds between peeks
-    public float peekDuration = 1.5f;     // how long grunt stays out to shoot
-    public float peekOffset = 1.2f;       // how far to move sideways to peek
+    public float peekInterval = 3f;
+    public float peekDuration = 1.5f;
+    public float peekOffset = 1.2f;
 
     private MovementComponent movement;
     private AttackComponent attack;
@@ -82,6 +82,42 @@ public class GruntController : MonoBehaviour
                 HandleRoaming();
                 break;
         }
+
+        HandleRotation(); // Always update rotation based on aggro or movement
+    }
+
+    // Rotation behavior depending on state
+    private void HandleRotation()
+    {
+        if (player == null) return;
+
+        bool hasAggro =
+            currentState == GruntState.Chasing ||
+            currentState == GruntState.InCover ||
+            currentState == GruntState.Peeking;
+
+        if (hasAggro)
+        {
+            // Rotate to face the player
+            Vector3 lookDir = (player.position - transform.position);
+            lookDir.y = 0f;
+            if (lookDir.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(lookDir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 6f);
+            }
+        }
+        else if (agent.velocity.sqrMagnitude > 0.1f)
+        {
+            // Rotate in the direction of movement
+            Vector3 moveDir = agent.velocity.normalized;
+            moveDir.y = 0f;
+            if (moveDir.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(moveDir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 6f);
+            }
+        }
     }
 
     private void HandleChasing()
@@ -102,7 +138,6 @@ public class GruntController : MonoBehaviour
         else
         {
             movement.StopMovement();
-            transform.LookAt(player);
             if (HasLineOfSightToPlayer())
                 attack.TryAttack(player);
         }
@@ -111,8 +146,6 @@ public class GruntController : MonoBehaviour
     private void HandlePeeking()
     {
         if (player == null) return;
-        transform.LookAt(player);
-
         if (HasLineOfSightToPlayer())
             attack.TryAttack(player);
     }
@@ -146,25 +179,18 @@ public class GruntController : MonoBehaviour
 
     private IEnumerator CoverRoutine()
     {
-        // Stay behind cover, peek out periodically
         while (health.IsAlive())
         {
-            // wait before peeking
             yield return new WaitForSeconds(peekInterval);
 
             if (player == null) continue;
 
-            // calculate a peek point
             Vector3 toPlayer = (player.position - coverPosition).normalized;
             Vector3 sideDir = Vector3.Cross(Vector3.up, toPlayer);
-
-            // random left or right peek
             float sideSign = Random.value > 0.5f ? 1f : -1f;
 
-            // offset sideways + slightly forward (toward player)
             Vector3 rawPeek = coverPosition + sideDir * sideSign * peekOffset + toPlayer * 0.8f;
 
-            // sample to valid NavMesh spot
             if (NavMesh.SamplePosition(rawPeek, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
             {
                 peekPosition = hit.position;
@@ -172,11 +198,9 @@ public class GruntController : MonoBehaviour
                 currentState = GruntState.Peeking;
                 movement.MoveTo(peekPosition);
 
-                // wait until grunt arrives
                 while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
                     yield return null;
 
-                // shoot while peeking
                 float endTime = Time.time + peekDuration;
                 while (Time.time < endTime && currentState == GruntState.Peeking)
                 {
@@ -184,17 +208,14 @@ public class GruntController : MonoBehaviour
                     yield return null;
                 }
 
-                // return to cover
                 movement.MoveTo(coverPosition);
                 currentState = GruntState.InCover;
 
-                // wait until back at cover
                 while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
                     yield return null;
             }
             else
             {
-                // fallback: skip peek if position invalid
                 currentState = GruntState.InCover;
             }
         }
