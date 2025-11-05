@@ -64,7 +64,6 @@ public class GruntController : MonoBehaviour
                 break;
 
             case GruntState.InCover:
-                // Wait for peek timing handled by coroutine
                 break;
 
             case GruntState.Peeking:
@@ -155,7 +154,7 @@ public class GruntController : MonoBehaviour
 
             if (player == null) continue;
 
-            // calculate a smarter peek point
+            // calculate a peek point
             Vector3 toPlayer = (player.position - coverPosition).normalized;
             Vector3 sideDir = Vector3.Cross(Vector3.up, toPlayer);
 
