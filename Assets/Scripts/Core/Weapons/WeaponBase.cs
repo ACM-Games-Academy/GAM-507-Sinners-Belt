@@ -10,7 +10,7 @@ public abstract class WeaponBase : MonoBehaviour
 
     [Header("Weapon Stats")]
     public float maxAmmo;
-    [SerializeField] protected float ammo;
+    [SerializeField] public float ammo;
 
     protected IFireMode fireMode;
     protected Camera cam;

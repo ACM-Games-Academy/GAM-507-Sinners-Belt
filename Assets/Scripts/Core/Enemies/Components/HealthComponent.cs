@@ -25,7 +25,7 @@ public class HealthComponent : MonoBehaviour, IHealth
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
-        Debug.Log($"[HealthComponent] Took {amount} damage. Current Health: {currentHealth}/{maxHealth}", this);
+        // Debug.Log($"[HealthComponent] Took {amount} damage. Current Health: {currentHealth}/{maxHealth}", this);
 
         if (currentHealth <= 0f)
             OnDeath?.Invoke();

@@ -35,15 +35,25 @@ public class PlayerMotor : MonoBehaviour
         HandleGravityAndJump();
     }
 
-    private void HandleMovement()
+        private void HandleMovement()
     {
         isGrounded = controller.isGrounded;
 
         Vector2 moveInput = input.Move;
-        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        Transform cam = Camera.main.transform;
+
+        Vector3 camForward = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
+        Vector3 camRight = Vector3.ProjectOnPlane(cam.right, Vector3.up).normalized;
+        Vector3 move = (camRight * moveInput.x + camForward * moveInput.y).normalized;
 
         float targetSpeed = input.IsSprinting ? sprintSpeed : walkSpeed;
         controller.Move(move * targetSpeed * Time.deltaTime);
+
+        if (move.magnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
     }
 
     private void HandleJumpCharge()
@@ -95,3 +105,4 @@ public class PlayerMotor : MonoBehaviour
         
     }
 }
+
