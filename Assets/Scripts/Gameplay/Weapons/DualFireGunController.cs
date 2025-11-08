@@ -10,9 +10,9 @@ public class DualFireGunController : WeaponBase
         base.Awake();
         semiAuto = new SemiAutoFireMode(semiAutoData);
     }
-
-    void Update()
+    private void LateUpdate()
     {
+        
         if (Input.GetButton("Fire1"))
         {
             Initialize(semiAuto);
@@ -23,7 +23,18 @@ public class DualFireGunController : WeaponBase
         {
             Reload();
         }
+
+        // muzzle alignment fix
+        if (cam != null && muzzlePoint != null)
+        {
+            muzzlePoint.rotation = cam.transform.rotation;
+
+            // uncomment if muzzle position moves to the camera
+            // muzzlePoint.position = cam.transform.position + cam.transform.forward * 0.5f;
+        }
     }
+
+
 
 
 }

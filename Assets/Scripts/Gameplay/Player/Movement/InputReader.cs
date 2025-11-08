@@ -64,7 +64,7 @@ public class InputReader : MonoBehaviour
             JumpHeld = false;
         }
     }
-    
+
     public void OnDash(InputAction.CallbackContext context)
     {
         if (context.performed)

@@ -13,7 +13,7 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] public float ammo;
 
     protected IFireMode fireMode;
-    protected Camera cam;
+    public Camera cam;
 
     protected virtual void Awake()
     {
@@ -62,6 +62,7 @@ public abstract class WeaponBase : MonoBehaviour
         
         Transform trail = Instantiate(bulletTrailPrefab).transform;
         StartCoroutine(AnimateTracer(trail, start, end));
+        
     }
 
     public IEnumerator AnimateTracer(Transform trail, Vector3 start, Vector3 end)

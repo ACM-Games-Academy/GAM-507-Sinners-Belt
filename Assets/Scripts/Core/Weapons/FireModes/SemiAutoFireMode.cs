@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class SemiAutoFireMode : IFireMode
@@ -28,13 +29,14 @@ public class SemiAutoFireMode : IFireMode
 
         lastFireTime = Time.time;
 
-        Vector3 targetPoint = weapon.GetCameraTargetPoint();
-        Vector3 muzzlePos = weapon.muzzlePoint.position;
-        Vector3 direction = (targetPoint - muzzlePos).normalized;
+        // Raycast from camera to crosshair
+        Vector3 rayOrigin = weapon.cam.transform.position;
+        Vector3 rayDirection = weapon.cam.transform.forward;
 
-        if (Physics.Raycast(muzzlePos, direction, out RaycastHit hit, Range, weapon.hitMask))
+        Vector3 targetPoint;
+        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, Range, weapon.hitMask))
         {
-            weapon.SpawnTracer(muzzlePos, hit.point);
+            targetPoint = hit.point;
 
             if (hit.collider.TryGetComponent(out IImpactable component))
             {
@@ -43,17 +45,22 @@ public class SemiAutoFireMode : IFireMode
                     Damage = Damage,
                 });
             }
+
+            Debug.Log($"[Gun] Hit {hit.collider.name} on layer {LayerMask.LayerToName(hit.collider.gameObject.layer)}");
         }
         else
         {
-            Vector3 missPoint = muzzlePos + direction * Range;
-            weapon.SpawnTracer(muzzlePos, missPoint);
+            targetPoint = rayOrigin + rayDirection * Range;
         }
-        
+
+        // Spawn tracer from muzzle to where camera hit
+        weapon.SpawnTracer(weapon.muzzlePoint.position, targetPoint);
+
         if (data.fireSound)
-            AudioSource.PlayClipAtPoint(data.fireSound, muzzlePos);
+            AudioSource.PlayClipAtPoint(data.fireSound, weapon.muzzlePoint.position);
 
         if (data.muzzleFlashPrefab)
             Object.Instantiate(data.muzzleFlashPrefab, weapon.muzzlePoint.position, weapon.muzzlePoint.rotation);
     }
+
 }
