@@ -13,6 +13,8 @@ public class HealthComponent : MonoBehaviour, IHealth
     public event Action<float, float> OnHealthChanged;
     public event Action OnDeath;
 
+
+    
     private void Awake()
     {
         currentHealth = maxHealth;
