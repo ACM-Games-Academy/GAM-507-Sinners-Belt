@@ -7,17 +7,16 @@ public abstract class WeaponBase : MonoBehaviour
     public Transform muzzlePoint;
     public LayerMask hitMask;
     public GameObject bulletTrailPrefab;
+    public Camera cam;
 
     [Header("Weapon Stats")]
     public float maxAmmo;
     [SerializeField] public float ammo;
 
     protected IFireMode fireMode;
-    protected Camera cam;
 
     protected virtual void Awake()
     {
-        cam = Camera.main;
         ammo = maxAmmo;
     }
 
@@ -50,6 +49,7 @@ public abstract class WeaponBase : MonoBehaviour
     {
         float range = fireMode?.Range ?? 1000f;
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+
         if (Physics.Raycast(ray, out RaycastHit hit, range, hitMask))
             return hit.point;
 

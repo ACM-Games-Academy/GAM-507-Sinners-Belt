@@ -24,6 +24,4 @@ public class DualFireGunController : WeaponBase
             Reload();
         }
     }
-
-
 }

@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 283487213}
   - component: {fileID: 283487212}
   - component: {fileID: 283487215}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -963,10 +963,11 @@ MonoBehaviour:
   muzzlePoint: {fileID: 419586610}
   hitMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   bulletTrailPrefab: {fileID: 8052629309728904650, guid: 86daa5f4862b1a74e946bbfb957b931d, type: 3}
-  maxAmmo: 10
-  ammo: 10
+  cam: {fileID: 1115166724}
+  maxAmmo: 100000
+  ammo: 100000
   semiAutoData: {fileID: 11400000, guid: ecedab5fa06ba5044a5fb41fd747398e, type: 2}
 --- !u!114 &467856585
 MonoBehaviour:
@@ -980,8 +981,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51b53f3b451a2641aa7481d0514d16b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  maxHealth: 100000
+  currentHealth: 100000
 --- !u!136 &467856586
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1057,6 +1058,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1711357620}
     m_Modifications:
+    - target: {fileID: 113383270148465239, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 398672061812702161, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1084,6 +1089,14 @@ PrefabInstance:
     - target: {fileID: 766864409959482272, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 766864409959482272, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184854247853230843, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3530773462710164641, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_Camera
@@ -1120,6 +1133,10 @@ PrefabInstance:
     - target: {fileID: 4446955055723508389, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_Name
       value: HealthUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4446955055723508389, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4554203948815407118, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_Pivot.x
@@ -1216,6 +1233,10 @@ PrefabInstance:
     - target: {fileID: 5397380205991488329, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552494570686581646, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6761400648074846656, guid: 8f16a14cd38396d4abf5665dd579d5ad, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3229,6 +3250,14 @@ PrefabInstance:
       propertyPath: m_AngularSpeed
       value: 240
       objectReference: {fileID: 0}
+    - target: {fileID: 4051813278821499118, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: maxHealth
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4051813278821499118, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: currentHealth
+      value: 100000
+      objectReference: {fileID: 0}
     - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: followStopDistance
       value: 1
@@ -3305,9 +3334,33 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7211588732452260633, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7211588732452260633, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332185013986893143, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332185013986893143, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_Direction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332185013986893143, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8675584737689472623, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_Name
       value: Grunt
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675584737689472623, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
