@@ -991,7 +991,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5317743294743279098, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.7
+      value: -44.68
       objectReference: {fileID: 0}
     - target: {fileID: 5317743294743279098, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2805,13 +2805,14 @@ MonoBehaviour:
   walkSpeed: 5
   sprintSpeed: 8
   rotationSpeed: 10
-  minJumpForce: 0.6
-  maxJumpForce: 2
+  minJumpForce: 1
+  maxJumpForce: 2.6
   maxChargeTime: 3
-  jumpCooldown: 0.3
+  jumpCooldown: 1
   gravity: -9.8
-  dashDistance: 10
-  dashCooldown: 6
+  coyoteTime: 0.15
+  dashDistance: 8
+  dashCooldown: 8
   dashAmount: 3
   groundCheck: {fileID: 6263691915848948803}
 --- !u!114 &5413929102418652495

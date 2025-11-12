@@ -19,7 +19,14 @@ public class PlayerMotor : MonoBehaviour
     public float maxJumpForce = 9f;
     public float maxChargeTime = 3f;      // how long you can hold jump to reach max height
     public float jumpCooldown = 0.3f;     // delay after landing before next jump
-    public float gravity = -9f;
+    public float gravity = -9f; 
+
+    private float coyoteTimer = 0f;
+    public float coyoteTime = 0.15f; // Small grace period
+
+    private float lastJumpTime = 0f;
+
+
 
     [Header("Dash Settings")]
     public float dashDistance = 20f;
@@ -50,13 +57,10 @@ public class PlayerMotor : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
+        HandleMovementAndGravity();
         HandlePlayerRotation();
         HandleJumpCharge();
-        HandleGravityAndJump();
         HandleDash();
-
-
     }
 
     private void Start()
@@ -78,9 +82,24 @@ public class PlayerMotor : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
-    private void HandleMovement()
+    private void HandleMovementAndGravity()
     {
-        // Get the forward and right direction of the camera
+        // Ground check
+        bool currentlyGrounded = groundCheck != null && groundCheck.isGrounded;
+
+        // Apply gravity (separate from jump charge)
+        if (currentlyGrounded && velocity.y < 0 && (Time.time - lastLandTime) > 0.05f)
+        {
+            velocity.y = -2f;
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+            velocity.y += gravity * Time.deltaTime;
+        }
+
+        // Movement
         Vector3 forward = Camera.main.transform.forward;
         forward.y = 0;
         forward.Normalize();
@@ -89,70 +108,68 @@ public class PlayerMotor : MonoBehaviour
         right.y = 0;
         right.Normalize();
 
-        // Calculate the move direction based on player input
         Vector3 moveDirection = forward * input.Move.y + right * input.Move.x;
-
-        // Determine the players speed (sprinting or walking)
         float currentSpeed = input.IsSprinting ? sprintSpeed : walkSpeed;
 
-        // Move the character
-        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+        Vector3 motion = moveDirection * currentSpeed;
+        motion += velocity;
 
+        controller.Move(motion * Time.deltaTime);
 
-        if (isGrounded && velocity.y < 0)
-        {
+        if (currentlyGrounded)
             lastLandTime = Time.time;
-        }
-
     }
-
-    private void HandleGravityAndJump()
-    {
-
-        // Only stick if grounded and not jumping up
-        if (isGrounded && velocity.y < -0.1f && !input.JumpPressed)
-            velocity.y = -2f;
-
-        // Apply gravity
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-    }
-
-
     private void HandleJumpCharge()
-    {   
-        // Use GroundCheck for grounded state
+    {
+        // Checks if player is grounded
         isGrounded = groundCheck != null && groundCheck.isGrounded;
 
-        Debug.Log($"IsGrounded: {isGrounded}, TimeSinceLastLand: {Time.time - lastLandTime}, JumpCooldown: {jumpCooldown}");
-        if (isGrounded && (Time.time - lastLandTime) > jumpCooldown)
+        // Update coyote timer
+        if (isGrounded)
+            coyoteTimer = coyoteTime;
+        else
+            coyoteTimer -= Time.deltaTime;
+
+        // Handle jump hold logic
+        if (coyoteTimer > 0 && (Time.time - lastJumpTime) > jumpCooldown)
         {
+            // Start charging
             if (input.JumpHeld)
             {
+                if (!isCharging)
+                    Debug.Log("Started charging jump");
+
                 isCharging = true;
                 jumpChargeTimer += Time.deltaTime;
-                jumpChargeTimer = Mathf.Clamp(jumpChargeTimer, 0, maxChargeTime);
+                jumpChargeTimer = Mathf.Clamp(jumpChargeTimer, 0f, maxChargeTime);
             }
+
+            // Released jump
             else if (isCharging && !input.JumpHeld)
             {
                 float chargePercent = jumpChargeTimer / maxChargeTime;
                 float jumpPower = Mathf.Lerp(minJumpForce, maxJumpForce, chargePercent);
 
                 velocity.y = Mathf.Sqrt(jumpPower * -2f * gravity);
+                lastJumpTime = Time.time;
 
+                // Debug.Log($"Jump Released! Charge={chargePercent:P1}, Force={velocity.y}");
+
+                // Reset charge
                 isCharging = false;
                 jumpChargeTimer = 0f;
-                lastLandTime = Time.time;
+
+                // Reset coyote (this prevents double jumps during coyote)
+                coyoteTimer = 0f;
             }
         }
         else
         {
-            isCharging = false;
+            // Not grounded and no coyote left
+            if (!isGrounded)
+                isCharging = false;
         }
     }
-
-       
-
     // Dash Mechanics 
     private void HandleDash()
     {
