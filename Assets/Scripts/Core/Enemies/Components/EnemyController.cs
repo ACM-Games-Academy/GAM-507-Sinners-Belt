@@ -64,33 +64,41 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     {
         if (player == null || !health.IsAlive()) return;
 
+        float dist = Vector3.Distance(transform.position, player.position);
+
         if (!playerVisible)
         {
             MoveTo(player.position);
         }
         else
         {
-            float dist = Vector3.Distance(transform.position, player.position);
-
-            // Maintain distance
-            if (dist > followStopDistance + 1f)
+            // --- Move toward player until in range ---
+            if (dist > followStopDistance + 0.5f)
+            {
                 MoveTo(player.position);
-            else if (dist < followStopDistance - 1f)
-                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+            }
+            // --- Maintain combat range (strafe or back up slightly) ---
             else
-                movement.StopMovement();
+            {
+                // If strafing is running, let coroutine handle lateral movement
+                if (strafeRoutine == null)
+                    strafeRoutine = StartCoroutine(StrafeRoutine());
 
-            // Avoid overlapping with allies
+                // Stay within range (don’t back off too much)
+                if (dist < followStopDistance - 1f)
+                    MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+            }
+
             AvoidOtherEnemies();
 
-            // Fire if player visible and not blocked
+            // Attack only if clear line of sight
             if (attack != null && HasLineOfSightToPlayer())
                 attack.TryAttack(player);
         }
 
-        // Always rotate smoothly to face player
         FacePlayer();
     }
+
 
     private void FacePlayer()
     {
@@ -142,28 +150,38 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             if (player == null)
                 yield break;
 
-            // Switch strafe direction occasionally
-            if (Time.time >= nextStrafeSwitch)
+            float dist = Vector3.Distance(transform.position, player.position);
+
+            // Only strafe while close enough
+            if (dist <= followStopDistance + 1.5f)
             {
-                strafeDir *= -1f;
-                nextStrafeSwitch = Time.time + strafeSwitchTime;
+                // Occasionally switch direction
+                if (Time.time >= nextStrafeSwitch)
+                {
+                    strafeDir *= -1f;
+                    nextStrafeSwitch = Time.time + strafeSwitchTime;
+                }
+
+                Vector3 toPlayer = (player.position - transform.position).normalized;
+                Vector3 side = Vector3.Cross(Vector3.up, toPlayer) * strafeDir;
+                Vector3 targetPos = transform.position + side * strafeDistance;
+
+                if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                {
+                    MoveTo(hit.position);
+                }
+            }
+            else
+            {
+                // Too far — close the gap instead of strafing
+                MoveTo(player.position);
             }
 
-            // Calculate side position relative to player
-            Vector3 toPlayer = (player.position - transform.position).normalized;
-            Vector3 side = Vector3.Cross(Vector3.up, toPlayer) * strafeDir;
-            Vector3 targetPos = transform.position + side * strafeDistance;
-
-            if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
-            {
-                MoveTo(hit.position);
-            }
-
-            // Face player even while strafing
             FacePlayer();
-
             yield return new WaitForSeconds(strafeSpeed);
         }
+
+        strafeRoutine = null;
     }
 
     // --- Avoidance logic ---
