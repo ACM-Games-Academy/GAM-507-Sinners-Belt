@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class SemiAutoFireMode : IFireMode
 {
@@ -6,6 +7,7 @@ public class SemiAutoFireMode : IFireMode
     public float Damage => data.damage;
     public float Range => data.range;
     public float AmmoConsumption => data.ammoConsumption;
+    public float KickPower => data.kickPower;
 
     private WeaponBase weapon;
     private readonly SemiAutoFireModeData data;
@@ -55,5 +57,9 @@ public class SemiAutoFireMode : IFireMode
 
         if (data.muzzleFlashPrefab)
             Object.Instantiate(data.muzzleFlashPrefab, weapon.muzzlePoint.position, weapon.muzzlePoint.rotation);
+
+        // Kick camera
+        CinemachineImpulseSource impulseSource = weapon.cam.GetComponent<CinemachineImpulseSource>();
+        impulseSource.GenerateImpulse(-weapon.cam.transform.forward * KickPower);
     }
 }
