@@ -10,7 +10,7 @@ public class GroundCheck : MonoBehaviour
 
     private void Update()
     {
-        // Check for ground using a small sphere that can be rezised should go green when on ground and red when not
+        // Check for ground using a small sphere at this object's position
         isGrounded = Physics.CheckSphere(transform.position, checkRadius, groundLayer);
         Debug.DrawRay(transform.position, Vector3.down * checkRadius, isGrounded ? Color.green : Color.red);
     }

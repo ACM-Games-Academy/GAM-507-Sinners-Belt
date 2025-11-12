@@ -14,7 +14,6 @@ public class InputReader : MonoBehaviour
     public bool JumpPressed { get; private set; }
     public bool DashPressed { get; private set; }
 
-    
     private void LateUpdate()
     {
         //Reset single frame inputs

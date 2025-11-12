@@ -288,7 +288,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": ";Keyboard&Mouse;Touch;Gamepad;Joystick;XR",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -310,7 +310,7 @@
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse;Gamepad",
+                    "groups": ";Keyboard&Mouse;Touch;Gamepad;XR",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
