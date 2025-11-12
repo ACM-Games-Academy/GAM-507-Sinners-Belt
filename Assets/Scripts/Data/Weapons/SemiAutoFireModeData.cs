@@ -10,6 +10,8 @@ public class SemiAutoFireModeData : ScriptableObject
     public float range = 1000f;
     [Tooltip("Ammo used per shot")]
     public float ammoConsumption = 1f;
+    [Tooltip("Kick (jolt) power on firing (recommended = 0.01f)")]
+    public float kickPower = 0.01f;
 
     [Header("Extra (optional)")]
     public AudioClip fireSound;
