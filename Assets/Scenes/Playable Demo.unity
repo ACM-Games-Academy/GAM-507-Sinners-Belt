@@ -640,6 +640,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: enemyMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: strafeSwitchTime
       value: 0.5
       objectReference: {fileID: 0}
@@ -700,6 +704,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: range
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: cooldown
       value: 0.25
       objectReference: {fileID: 0}
@@ -707,6 +715,10 @@ PrefabInstance:
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 178643061197957055, guid: d6e3a149c79d7044396baa6673493eb1, type: 3}
+    - target: {fileID: 7719859019934002046, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.65
+      objectReference: {fileID: 0}
     - target: {fileID: 8675584737689472623, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_Name
       value: Grunt (2)
@@ -1380,6 +1392,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: enemyMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: strafeSwitchTime
       value: 0.5
       objectReference: {fileID: 0}
@@ -1444,6 +1460,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: range
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: cooldown
       value: 0.25
       objectReference: {fileID: 0}
@@ -1459,6 +1479,10 @@ PrefabInstance:
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 178643061197957055, guid: d6e3a149c79d7044396baa6673493eb1, type: 3}
+    - target: {fileID: 7719859019934002046, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.65000004
+      objectReference: {fileID: 0}
     - target: {fileID: 8675584737689472623, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_Name
       value: Grunt
@@ -1920,6 +1944,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: enemyMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: strafeSwitchTime
       value: 0.5
       objectReference: {fileID: 0}
@@ -1980,6 +2008,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: range
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904679105238655504, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: cooldown
       value: 0.25
       objectReference: {fileID: 0}
@@ -1987,6 +2019,10 @@ PrefabInstance:
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 178643061197957055, guid: d6e3a149c79d7044396baa6673493eb1, type: 3}
+    - target: {fileID: 7719859019934002046, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.65000004
+      objectReference: {fileID: 0}
     - target: {fileID: 8675584737689472623, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_Name
       value: Grunt (1)
