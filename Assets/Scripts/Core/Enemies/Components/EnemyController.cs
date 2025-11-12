@@ -18,24 +18,15 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public float lostSightDuration = 5f;
     public float losRecheckInterval = 0.5f;
 
-    [Header("Cover Settings")]
-    public float coverSearchRadius = 8f;
-    public float peekInterval = 3f;
-    public float peekDuration = 1.5f;
-    public float peekOffset = 1.2f;
-    public float coverScanRadius = 5f;
-    public LayerMask coverMask;
-    public LayerMask obstacleMask;
+    [Header("Combat Movement")]
+    public float strafeDistance = 2.5f;
+    public float strafeSpeed = 2f;
+    public float strafeSwitchTime = 2f;
 
     private Transform player;
     private Vector3 lastKnownPlayerPos;
-    private float lostSightTimer;
     private bool playerVisible;
-
-    private Vector3 coverPosition;
-    private Vector3 peekPosition;
-    private Coroutine coverRoutine;
-    private bool usingTallCover;
+    private Coroutine strafeRoutine;
 
     // --- Public getters ---
     public Transform GetPlayer() => player;
@@ -61,23 +52,29 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (health != null)
         {
             health.OnDeath += HandleDeath;
-            health.OnHealthChanged += HandleHealthChanged;
         }
-    }
-
-    private void Start()
-    {
-        MoveToNearestCover("ShortCover");
     }
 
     private void Update()
     {
         if (player == null || !health.IsAlive()) return;
 
-        // Attack if visible and has LOS
-        if (playerVisible && attack != null && HasLineOfSightToPlayer())
+        if (!playerVisible)
         {
-            attack.TryAttack(player);
+            // Move toward player until visible
+            MoveTo(player.position);
+        }
+        else
+        {
+            // Maintain distance and attack
+            float dist = Vector3.Distance(transform.position, player.position);
+            if (dist > followStopDistance)
+                MoveTo(player.position);
+            else
+                movement.StopMovement();
+
+            if (attack != null && HasLineOfSightToPlayer())
+                attack.TryAttack(player);
         }
 
         FacePlayer();
@@ -104,92 +101,63 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
-        if (coverRoutine != null)
-            StopCoroutine(coverRoutine);
-        coverRoutine = StartCoroutine(CoverRoutine());
+        // Start strafing
+        if (strafeRoutine == null)
+            strafeRoutine = StartCoroutine(StrafeRoutine());
     }
 
     public void OnPlayerLost()
     {
         playerVisible = false;
+
+        // Stop strafing
+        if (strafeRoutine != null)
+            StopCoroutine(strafeRoutine);
+        strafeRoutine = null;
     }
 
     // --- Interface: IImpactable ---
     public void OnImpact(ImpactInfo data)
     {
-        if (health != null)
-            health.TakeDamage(data.Damage);
+        health?.TakeDamage(data.Damage);
     }
 
-    private void HandleHealthChanged(float current, float max)
+    // --- Strafing Combat Routine ---
+    private IEnumerator StrafeRoutine()
     {
-        if (current <= max * 0.5f && !usingTallCover)
+        float strafeDir = 1f;
+        float nextSwitch = Time.time + strafeSwitchTime;
+
+        while (playerVisible && health.IsAlive())
         {
-            usingTallCover = true;
-            MoveToNearestCover("TallCover");
-        }
-    }
+            if (player == null)
+                yield break;
 
-    // --- Main AI Cover Routine ---
-    private IEnumerator CoverRoutine()
-    {
-        while (health.IsAlive())
-        {
-            yield return new WaitForSeconds(peekInterval);
+            float dist = Vector3.Distance(transform.position, player.position);
 
-            if (player == null || !playerVisible)
-                continue;
+            // Maintain safe distance
+            if (dist > followStopDistance + 1f)
+                MoveTo(player.position);
+            else if (dist < followStopDistance - 1f)
+                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
 
-            Vector3 toPlayer = (player.position - coverPosition).normalized;
-            Vector3 sideDir = Vector3.Cross(Vector3.up, toPlayer);
+            // Strafe side to side
+            Vector3 side = Vector3.Cross(Vector3.up, (player.position - transform.position).normalized);
+            Vector3 targetPos = transform.position + side * strafeDir * strafeDistance;
 
-            // pick side that gives LOS break
-            Vector3 leftPeek = coverPosition - sideDir * peekOffset;
-            Vector3 rightPeek = coverPosition + sideDir * peekOffset;
-
-            bool leftVisible = HasLineOfSightFrom(leftPeek);
-            bool rightVisible = HasLineOfSightFrom(rightPeek);
-
-            Vector3 chosenPeek = (!leftVisible && rightVisible) ? leftPeek :
-                                 (leftVisible && !rightVisible) ? rightPeek :
-                                 (UnityEngine.Random.value > 0.5f ? rightPeek : leftPeek);
-
-            if (NavMesh.SamplePosition(chosenPeek + toPlayer * 0.8f, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
             {
-                peekPosition = hit.position;
-                MoveTo(peekPosition);
-
-                while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
-                    yield return null;
-
-                float endTime = Time.time + peekDuration;
-                while (Time.time < endTime)
-                {
-                    if (playerVisible && HasLineOfSightToPlayer())
-                        attack.TryAttack(player);
-                    yield return null;
-                }
-
-                MoveTo(coverPosition);
-                while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
-                    yield return null;
+                MoveTo(hit.position);
             }
+
+            if (Time.time >= nextSwitch)
+            {
+                strafeDir *= -1f;
+                nextSwitch = Time.time + strafeSwitchTime;
+            }
+
+            yield return new WaitForSeconds(strafeSpeed);
         }
-    }
-
-    private bool HasLineOfSightFrom(Vector3 position)
-    {
-        if (player == null) return false;
-
-        Vector3 origin = position + Vector3.up * 1.5f;
-        Vector3 dir = (player.position + Vector3.up * 1f) - origin;
-
-        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
-        {
-            return hit.collider.CompareTag("Player");
-        }
-
-        return true;
     }
 
     private bool HasLineOfSightToPlayer()
@@ -199,56 +167,13 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         Vector3 origin = transform.position + Vector3.up * 1.5f;
         Vector3 dir = (player.position + Vector3.up * 1f) - origin;
 
-        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
+        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
         {
             if (!hit.collider.CompareTag("Player"))
                 return false;
         }
 
         return true;
-    }
-
-    public void MoveToNearestCover(string tag)
-    {
-        Collider[] covers = Physics.OverlapSphere(transform.position, coverScanRadius, coverMask);
-        Collider bestCover = null;
-        float bestDist = Mathf.Infinity;
-
-        foreach (var c in covers)
-        {
-            if (!c.CompareTag(tag)) continue;
-            float dist = Vector3.Distance(transform.position, c.transform.position);
-
-            // Check which side is out of player LOS
-            if (player != null)
-            {
-                Vector3 toCover = c.transform.position - player.position;
-                Vector3 losOrigin = player.position + Vector3.up * 1.5f;
-                Vector3 losDir = toCover.normalized;
-
-                if (Physics.Raycast(losOrigin, losDir, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
-                {
-                    if (!hit.collider.CompareTag(tag)) continue; // not actually hidden behind cover
-                }
-            }
-
-            if (dist < bestDist)
-            {
-                bestCover = c;
-                bestDist = dist;
-            }
-        }
-
-        if (bestCover != null && NavMesh.SamplePosition(bestCover.transform.position, out NavMeshHit hitNav, 2f, NavMesh.AllAreas))
-        {
-            MoveTo(hitNav.position);
-            coverPosition = hitNav.position;
-        }
-        else
-        {
-            // fallback: move toward last known player position
-            MoveTo(lastKnownPlayerPos);
-        }
     }
 
     public void MoveTo(Vector3 destination)
@@ -274,18 +199,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (health != null)
         {
             health.OnDeath -= HandleDeath;
-            health.OnHealthChanged -= HandleHealthChanged;
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, coverScanRadius);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(coverPosition, 0.3f);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(peekPosition, 0.3f);
     }
 }
