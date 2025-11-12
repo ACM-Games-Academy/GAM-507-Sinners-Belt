@@ -5,7 +5,10 @@ using UnityEngine.XR;
 public class PlayerMotor : MonoBehaviour
 {
     [Header("References")]
-    public InputReader input;
+    public InputReader input;   
+
+     public GroundCheck groundCheck;
+    
 
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
@@ -39,6 +42,16 @@ public class PlayerMotor : MonoBehaviour
 
     private bool prevDashPressed = false;
 
+    public int AvailableDashes => availableDashes;
+
+    [Header("Crouch Settings")]
+
+    private float crouchHeight = 1f;
+    private float standHeight = 2f;
+    private float crouchSpeed = 10f;
+    private bool wasCrouching = false;
+
+
 
     private CharacterController controller;
     private Vector3 velocity;
@@ -49,7 +62,7 @@ public class PlayerMotor : MonoBehaviour
 
     private bool isGrounded;
 
-    public GroundCheck groundCheck;
+   
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -61,6 +74,7 @@ public class PlayerMotor : MonoBehaviour
         HandlePlayerRotation();
         HandleJumpCharge();
         HandleDash();
+        HandleCrouch();
     }
 
     private void Start()
@@ -235,6 +249,13 @@ public class PlayerMotor : MonoBehaviour
 
         // small cooldown buffer between dashes (for spam control)
         lastDashTime = Time.time;
+       
+    }
+    private void HandleCrouch()
+    {
+
+        float targetHeight = input.IsCrouching ? 1f : 2f;
+        controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * 10f);
     }
 
 }
