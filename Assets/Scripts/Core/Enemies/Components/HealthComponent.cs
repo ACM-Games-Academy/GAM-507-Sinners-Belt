@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using System.Collections;
+
 
 [RequireComponent(typeof(Collider))]
 public class HealthComponent : MonoBehaviour, IHealth
@@ -13,9 +15,21 @@ public class HealthComponent : MonoBehaviour, IHealth
     public event Action<float, float> OnHealthChanged;
     public event Action OnDeath;
 
+    private Renderer rend;
+    private Material mat;
+    private Color originalColor;
+
+    
+
     private void Awake()
     {
         currentHealth = maxHealth;
+        rend = GetComponent<Renderer>();
+        if (rend != null)
+        {
+            mat = rend.material; // this creates a unique material for this renderer
+            originalColor = mat.color;
+        }
     }
 
     public void TakeDamage(float amount)
@@ -24,12 +38,21 @@ public class HealthComponent : MonoBehaviour, IHealth
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-
-        // Debug.Log($"[HealthComponent] Took {amount} damage. Current Health: {currentHealth}/{maxHealth}", this);
+        StartCoroutine(DamageFlash());
 
         if (currentHealth <= 0f)
             OnDeath?.Invoke();
     }
+
+    private IEnumerator DamageFlash()
+    {
+        if (mat == null) yield break;
+
+        mat.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        mat.color = originalColor;
+    }
+
 
     public void Heal(float amount)
     {
@@ -61,4 +84,9 @@ public class HealthComponent : MonoBehaviour, IHealth
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
+
+    //Flash Material on damage taken
+    
+    
+
 }

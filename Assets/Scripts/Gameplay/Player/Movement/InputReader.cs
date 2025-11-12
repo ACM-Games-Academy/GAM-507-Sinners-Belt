@@ -19,6 +19,7 @@ public class InputReader : MonoBehaviour
         //Reset single frame inputs
         JumpPressed = false;
         DashPressed = false;
+
     }
 
 
@@ -45,10 +46,14 @@ public class InputReader : MonoBehaviour
     }
 
     public void OnCrouch(InputAction.CallbackContext context)
-    {
+      {
         if (context.performed)
         {
-            IsCrouching = !IsCrouching; //toggle crouch
+            IsCrouching = true;
+        }
+        else if (context.canceled)
+        {
+            IsCrouching = false;
         }
     }
 

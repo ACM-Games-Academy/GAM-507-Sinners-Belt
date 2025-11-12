@@ -70,6 +70,23 @@ public class VisionComponent : MonoBehaviour
         if (currentPlayer != null) { currentPlayer = null; PlayerLost?.Invoke(); }
     }
 
+    public bool CanSee(Transform target)
+    {
+        if (target == null) return false;
+
+        Vector3 dir = (target.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, dir);
+        if (angle > viewAngle * 0.5f) return false;
+
+        // line-of-sight raycast check
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, out RaycastHit hit, viewRadius, obstacleMask | playerMask))
+        {
+            return hit.transform == target;
+        }
+
+        return false;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
