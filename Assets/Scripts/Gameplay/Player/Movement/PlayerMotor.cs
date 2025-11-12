@@ -1,5 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine.XR;
 public class PlayerMotor : MonoBehaviour
 {
     [Header("References")]
@@ -10,7 +12,7 @@ public class PlayerMotor : MonoBehaviour
     public float sprintSpeed = 12f;
 
     [Header("Rotation Settings")]
-    public float rotationSpeed = 10f; 
+    public float rotationSpeed = 10f;
 
     [Header("Jump Settings")]
     public float minJumpForce = 3f;
@@ -21,16 +23,26 @@ public class PlayerMotor : MonoBehaviour
 
     [Header("Dash Settings")]
     public float dashDistance = 20f;
-    public float dashCooldown = 1f;
+    public float dashCooldown = 6f;
     public float dashAmount = 3f;
+
+    private float lastDashTime;
+    private float[] dashRechargeTimers;
+    private int availableDashes;
+
+    private bool prevDashPressed = false;
+
 
     private CharacterController controller;
     private Vector3 velocity;
-    private bool isGrounded;
+
     private float jumpChargeTimer;
     private float lastLandTime;
     private bool isCharging;
 
+    private bool isGrounded;
+
+    public GroundCheck groundCheck;
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -43,8 +55,15 @@ public class PlayerMotor : MonoBehaviour
         HandleJumpCharge();
         HandleGravityAndJump();
         HandleDash();
+
+
     }
 
+    private void Start()
+    {
+        dashRechargeTimers = new float[(int)dashAmount];
+        availableDashes = (int)dashAmount;
+    }
 
     private void HandlePlayerRotation()
     {
@@ -59,9 +78,6 @@ public class PlayerMotor : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
-
-
-
     private void HandleMovement()
     {
         // Get the forward and right direction of the camera
@@ -82,47 +98,48 @@ public class PlayerMotor : MonoBehaviour
         // Move the character
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
-        // Check if the player is grounded
-        isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
         {
             lastLandTime = Time.time;
         }
-        // // Calculate the target rotation based on the move direction
-        // Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
 
-        // // Smoothly rotate the player towards the target rotation
-        // transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-
-        // // If the move direction is not zero rotate the player
-        // if (moveDirection != Vector3.zero)
-        // {
-            
-        // }
     }
 
-    private void HandleJumpCharge()
+    private void HandleGravityAndJump()
     {
-        // Time how long the jump button is held down
+
+        // Only stick if grounded and not jumping up
+        if (isGrounded && velocity.y < -0.1f && !input.JumpPressed)
+            velocity.y = -2f;
+
+        // Apply gravity
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
+
+
+    private void HandleJumpCharge()
+    {   
+        // Use GroundCheck for grounded state
+        isGrounded = groundCheck != null && groundCheck.isGrounded;
+
+        Debug.Log($"IsGrounded: {isGrounded}, TimeSinceLastLand: {Time.time - lastLandTime}, JumpCooldown: {jumpCooldown}");
         if (isGrounded && (Time.time - lastLandTime) > jumpCooldown)
         {
             if (input.JumpHeld)
             {
-                // Start charging while holding jump
                 isCharging = true;
                 jumpChargeTimer += Time.deltaTime;
                 jumpChargeTimer = Mathf.Clamp(jumpChargeTimer, 0, maxChargeTime);
             }
             else if (isCharging && !input.JumpHeld)
             {
-                // Jumps higher based on how long the jump was held
                 float chargePercent = jumpChargeTimer / maxChargeTime;
                 float jumpPower = Mathf.Lerp(minJumpForce, maxJumpForce, chargePercent);
 
                 velocity.y = Mathf.Sqrt(jumpPower * -2f * gravity);
 
-                // Reset charge state
                 isCharging = false;
                 jumpChargeTimer = 0f;
                 lastLandTime = Time.time;
@@ -130,46 +147,60 @@ public class PlayerMotor : MonoBehaviour
         }
         else
         {
-            // If we are not grounded, stop charging
             isCharging = false;
         }
     }
 
-    private void HandleGravityAndJump()
-    {
-        // Stick to the ground if grounded
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f; // stick to ground 
-        }
-
-        // Apply gravity
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-    }
+       
 
     // Dash Mechanics 
     private void HandleDash()
     {
-        //Ignore Cooldown for now, basic dash implementation
-
-
-        if (input.DashPressed)
+        // update recharge timers
+        for (int i = 0; i < dashRechargeTimers.Length; i++)
         {
-            Dash();
+            if (dashRechargeTimers[i] > 0f)
+            {
+                dashRechargeTimers[i] -= Time.deltaTime;
+                if (dashRechargeTimers[i] <= 0f)
+                {
+                    dashRechargeTimers[i] = 0f;
+                    availableDashes = Mathf.Min(availableDashes + 1, (int)dashAmount);
+                    Debug.Log($"Dash recharged! Available Dashes: {availableDashes}");
+                }
+            }
         }
 
+        // holding key shouldnt dash multiple times
+        bool currentDashPressed = input.DashPressed;
+        bool pressedThisFrame = currentDashPressed && !prevDashPressed;
+        prevDashPressed = currentDashPressed;
 
+        if (!pressedThisFrame) return;
 
-        Debug.Log("Dash executed");
+        if (availableDashes <= 0) return;
+        if (Time.time - lastDashTime < 0.1f) return; // small buffer to avoid 2 dashes in 1 frame
+
+        // consume a dash
+        Dash();
+        availableDashes--;
+
+        // start recharge timer for the first free slot
+        for (int i = 0; i < dashRechargeTimers.Length; i++)
+        {
+            if (dashRechargeTimers[i] <= 0f)
+            {
+                dashRechargeTimers[i] = dashCooldown;
+                break;
+            }
+        }
+
+        lastDashTime = Time.time;
+        Debug.Log($"Dash executed | Remaining Dashes: {availableDashes}");
     }
-    
     private void Dash()
     {
-        // Dash in the direction the player is moving
-        Vector3 dashDirection = Vector3.zero;
-
-        // Get the forward and right direction of the camera
+        // Dash direction based on camera
         Vector3 forward = Camera.main.transform.forward;
         forward.y = 0;
         forward.Normalize();
@@ -178,20 +209,15 @@ public class PlayerMotor : MonoBehaviour
         right.y = 0;
         right.Normalize();
 
-        dashDirection = forward * input.Move.y + right * input.Move.x;
+        Vector3 dashDirection = forward * input.Move.y + right * input.Move.x;
 
         if (dashDirection == Vector3.zero)
-        {
-            dashDirection = transform.forward; // Dash forward if no input
-        }
+            dashDirection = transform.forward;
 
-        dashDirection.Normalize();
+        controller.Move(dashDirection.normalized * dashDistance);
 
-        controller.Move(dashDirection * dashDistance);
+        // small cooldown buffer between dashes (for spam control)
+        lastDashTime = Time.time;
     }
 
-    // Crouch Mechanics 
-    private void Crouch()
-    {
-    }
 }
