@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 283487215}
   m_Layer: 6
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: TallCover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -633,7 +633,7 @@ GameObject:
   - component: {fileID: 1093764356}
   m_Layer: 6
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: ShortCover
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1099,6 +1099,11 @@ Transform:
   - {fileID: 326940279}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &2026698003 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 3067953635958582188, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+  m_PrefabInstance: {fileID: 1020484339445063921}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1020484339445063921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1127,6 +1132,30 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1115166724}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 2026698003}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: peekOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: peekInterval
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: coverScanRadius
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: coverMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199612762850617306, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 5317743294743279098, guid: d4d182ac71b5a444486bf24d142f9912, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.22
