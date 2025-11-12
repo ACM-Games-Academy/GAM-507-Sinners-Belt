@@ -2179,13 +2179,9 @@ RectTransform:
   - {fileID: 1005578109620355819}
   - {fileID: 2769445875037004941}
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
   - {fileID: 345844261}
   - {fileID: 132092305}
   m_Father: {fileID: 2481612037475142348}
-=======
-  m_Father: {fileID: 0}
->>>>>>> Stashed changes
 =======
   m_Father: {fileID: 0}
 >>>>>>> Stashed changes
