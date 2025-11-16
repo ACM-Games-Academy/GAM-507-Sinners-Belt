@@ -46,7 +46,7 @@ public class AttackComponent : MonoBehaviour, IAttacker
 
         // Aim
         if (firePoint != null)
-            firePoint.LookAt(target.position + Vector3.up * 0.5f);
+            firePoint.LookAt(target.position + Vector3.up * 0.6f);
 
         // Fire
         if (projectilePrefab != null && firePoint != null)

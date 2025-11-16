@@ -1,5 +1,7 @@
-using UnityEngine;
 using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(HealthComponent))]
 public class EnemyController : MonoBehaviour, IAggro, IImpactable
@@ -9,27 +11,38 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public AttackComponent attack;
     public VisionComponent vision;
     public HealthComponent health;
+    public NavMeshAgent agent;
 
     [Header("Behavior")]
-    public float followStopDistance = 2f;
+    public float followStopDistance = 6f;
+    public float losRecheckInterval = 0.5f;
+
+    [Header("Combat Movement")]
+    public float strafeDistance = 2.5f;
+    public float strafeSpeed = 2f;
+    public float strafeSwitchTime = 2f;
+    public float avoidRadius = 2f;
+    public LayerMask enemyMask;
 
     private Transform player;
-    public bool HasAggro => player != null && health != null && health.IsAlive();
+    private Vector3 lastKnownPlayerPos;
+    private bool playerVisible;
+    private Coroutine strafeRoutine;
+    private float nextStrafeSwitch;
+    private float strafeDir = 1f;
 
-    public void OnImpact(ImpactInfo data)
-    {
-        if (TryGetComponent(out IHealth component))
-        {
-            component.TakeDamage(data.Damage);
-        }
-    }
+    // --- Public getters ---
+    public Transform GetPlayer() => player;
+    public bool CanSeePlayer() => playerVisible;
+    public Vector3 GetLastKnownPlayerPos() => lastKnownPlayerPos;
 
     private void Awake()
     {
-        health = health ?? GetComponent<HealthComponent>();
-        movement = movement ?? GetComponent<MovementComponent>();
-        attack = attack ?? GetComponent<AttackComponent>();
-        vision = vision ?? GetComponent<VisionComponent>();
+        health ??= GetComponent<HealthComponent>();
+        movement ??= GetComponent<MovementComponent>();
+        attack ??= GetComponent<AttackComponent>();
+        vision ??= GetComponent<VisionComponent>();
+        agent ??= GetComponent<NavMeshAgent>();
 
         if (vision != null)
         {
@@ -41,39 +54,180 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         {
             health.OnDeath += HandleDeath;
         }
+
+        // Let script control rotation, not the NavMeshAgent
+        if (agent != null)
+            agent.updateRotation = false;
     }
 
     private void Update()
     {
-        if (!HasAggro) return;
+        if (player == null || !health.IsAlive()) return;
 
         float dist = Vector3.Distance(transform.position, player.position);
 
-        // Attack if in attack range
-        if (attack != null && dist <= attack.range)
+        if (!playerVisible)
         {
-            movement?.StopMovement();
-            attack.TryAttack(player);
+            MoveTo(player.position);
         }
-        else if (movement != null)
+        else
         {
-            // Approach player but stop before collision
-            Vector3 targetPos = player.position;
-            Vector3 dir = (transform.position - player.position).normalized;
-            targetPos += dir * followStopDistance;
-            movement.MoveTo(targetPos);
+            // --- Move toward player until in range ---
+            if (dist > followStopDistance + 0.5f)
+            {
+                MoveTo(player.position);
+            }
+            // --- Maintain combat range (strafe or back up slightly) ---
+            else
+            {
+                // If strafing is running, let coroutine handle lateral movement
+                if (strafeRoutine == null)
+                    strafeRoutine = StartCoroutine(StrafeRoutine());
+
+                // Stay within range (don’t back off too much)
+                if (dist < followStopDistance - 1f)
+                    MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+            }
+
+            AvoidOtherEnemies();
+
+            // Attack only if clear line of sight
+            if (attack != null && HasLineOfSightToPlayer())
+                attack.TryAttack(player);
+        }
+
+        FacePlayer();
+    }
+
+
+    private void FacePlayer()
+    {
+        if (player == null) return;
+
+        Vector3 lookDir = player.position - transform.position;
+        lookDir.y = 0f;
+
+        if (lookDir.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(lookDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
         }
     }
 
+    // --- IAggro interface ---
     public void OnPlayerDetected(Transform playerTransform)
     {
         player = playerTransform;
+        playerVisible = true;
+        lastKnownPlayerPos = player.position;
+
+        if (strafeRoutine == null)
+            strafeRoutine = StartCoroutine(StrafeRoutine());
     }
 
     public void OnPlayerLost()
     {
-        player = null;
-        movement?.StopMovement();
+        playerVisible = false;
+
+        if (strafeRoutine != null)
+            StopCoroutine(strafeRoutine);
+        strafeRoutine = null;
+    }
+
+    // --- IImpactable interface ---
+    public void OnImpact(ImpactInfo data)
+    {
+        health?.TakeDamage(data.Damage);
+    }
+
+    // --- Strafing ---
+    private IEnumerator StrafeRoutine()
+    {
+        nextStrafeSwitch = Time.time + strafeSwitchTime;
+
+        while (playerVisible && health.IsAlive())
+        {
+            if (player == null)
+                yield break;
+
+            float dist = Vector3.Distance(transform.position, player.position);
+
+            // Only strafe while close enough
+            if (dist <= followStopDistance + 1.5f)
+            {
+                // Occasionally switch direction
+                if (Time.time >= nextStrafeSwitch)
+                {
+                    strafeDir *= -1f;
+                    nextStrafeSwitch = Time.time + strafeSwitchTime;
+                }
+
+                Vector3 toPlayer = (player.position - transform.position).normalized;
+                Vector3 side = Vector3.Cross(Vector3.up, toPlayer) * strafeDir;
+                Vector3 targetPos = transform.position + side * strafeDistance;
+
+                if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                {
+                    MoveTo(hit.position);
+                }
+            }
+            else
+            {
+                // Too far — close the gap instead of strafing
+                MoveTo(player.position);
+            }
+
+            FacePlayer();
+            yield return new WaitForSeconds(strafeSpeed);
+        }
+
+        strafeRoutine = null;
+    }
+
+    // --- Avoidance logic ---
+    private void AvoidOtherEnemies()
+    {
+        Collider[] nearby = Physics.OverlapSphere(transform.position, avoidRadius, enemyMask);
+        foreach (var other in nearby)
+        {
+            if (other.gameObject == gameObject) continue;
+
+            Vector3 dirAway = (transform.position - other.transform.position).normalized;
+            Vector3 offset = dirAway * 0.5f;
+
+            // Move sideways if looking directly at another enemy
+            float dot = Vector3.Dot(transform.forward, (other.transform.position - transform.position).normalized);
+            if (dot > 0.5f)
+            {
+                Vector3 sideStep = Vector3.Cross(Vector3.up, transform.forward).normalized *
+                                   (UnityEngine.Random.value > 0.5f ? 1 : -1);
+                MoveTo(transform.position + sideStep);
+            }
+
+            // Keep separation
+            transform.position += offset * Time.deltaTime;
+        }
+    }
+
+    private bool HasLineOfSightToPlayer()
+    {
+        if (player == null) return false;
+
+        Vector3 origin = transform.position + Vector3.up * 1.5f;
+        Vector3 dir = (player.position + Vector3.up * 1f) - origin;
+
+        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
+        {
+            if (hit.collider.CompareTag("Enemy")) return false;
+            return hit.collider.CompareTag("Player");
+        }
+
+        return false;
+    }
+
+    public void MoveTo(Vector3 destination)
+    {
+        movement?.MoveTo(destination);
     }
 
     private void HandleDeath()
@@ -90,10 +244,17 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             vision.PlayerDetected -= OnPlayerDetected;
             vision.PlayerLost -= OnPlayerLost;
         }
-
         if (health != null)
         {
             health.OnDeath -= HandleDeath;
         }
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, avoidRadius);
+    }
+#endif
 }
