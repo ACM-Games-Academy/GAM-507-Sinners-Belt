@@ -43,16 +43,6 @@ public class PlayerMotor : MonoBehaviour
     private bool prevDashPressed = false;
 
     public int AvailableDashes => availableDashes;
-
-    [Header("Crouch Settings")]
-
-    private float crouchHeight = 1f;
-    private float standHeight = 2f;
-    private float crouchSpeed = 10f;
-    private bool wasCrouching = false;
-
-
-
     private CharacterController controller;
     private Vector3 velocity;
 
@@ -62,10 +52,13 @@ public class PlayerMotor : MonoBehaviour
 
     private bool isGrounded;
 
+    private Animator animator;
+
    
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -129,6 +122,13 @@ public class PlayerMotor : MonoBehaviour
         motion += velocity;
 
         controller.Move(motion * Time.deltaTime);
+
+        //Animator Updates
+         bool isMoving = moveDirection.sqrMagnitude > 0.01f && currentlyGrounded;
+
+        animator.SetBool("IsWalking", isMoving);
+        animator.SetBool("IsSprinting", input.IsSprinting && isMoving);
+
 
         if (currentlyGrounded)
             lastLandTime = Time.time;
