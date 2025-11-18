@@ -8,17 +8,7 @@ public abstract class WeaponBase : MonoBehaviour
     public LayerMask hitMask;
     public GameObject bulletTrailPrefab;
     public Camera cam;
-
-    [Header("Weapon Stats")]
-    public float maxAmmo;
-    [SerializeField] public float ammo;
-
     protected IFireMode fireMode;
-
-    protected virtual void Awake()
-    {
-        ammo = maxAmmo;
-    }
 
     public virtual void Initialize(IFireMode mode)
     {
@@ -26,23 +16,34 @@ public abstract class WeaponBase : MonoBehaviour
         fireMode.Initialize(this);
     }
 
-    public virtual void Fire()
+    public virtual FireResponse Fire()
     {
-        fireMode?.Fire();
+        return fireMode != null ? fireMode.Fire() : FireResponse.NoFireMode;
     }
 
-    public virtual void Reload()
+    public virtual int GetCurrentAmmo()
     {
-        ammo = maxAmmo;
+        return fireMode != null ? fireMode.CurrentAmmo : 0;
     }
 
-    public virtual bool TryUseAmmo(float count)
+    public virtual int GetMaxAmmo()
     {
-        if (ammo - count < 0)
-            return false;
+        return fireMode != null ? fireMode.MaxAmmo : 0;
+    }
 
-        ammo -= count;
-        return true;
+    public virtual bool TryReload()
+    {
+        if (fireMode != null && !fireMode.IsReloading && fireMode.CurrentAmmo != fireMode.MaxAmmo)
+        {
+            StartCoroutine(Reload());
+            return true;
+        }
+        else return false;
+    }
+
+    private IEnumerator Reload()
+    {
+        yield return StartCoroutine(fireMode.Reload());
     }
 
     public Vector3 GetCameraTargetPoint()

@@ -8681,11 +8681,9 @@ MonoBehaviour:
   muzzlePoint: {fileID: 817373460}
   hitMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4294967295
   bulletTrailPrefab: {fileID: 8052629309728904650, guid: 86daa5f4862b1a74e946bbfb957b931d, type: 3}
   cam: {fileID: 15525933}
-  maxAmmo: 100
-  ammo: 100
   semiAutoData: {fileID: 11400000, guid: ecedab5fa06ba5044a5fb41fd747398e, type: 2}
 --- !u!114 &2007220628869562970
 MonoBehaviour:

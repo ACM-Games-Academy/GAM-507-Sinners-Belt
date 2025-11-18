@@ -7,27 +7,35 @@ public class DualFireGunController : WeaponBase
 
     private Animator animator;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         semiAuto = new SemiAutoFireMode(semiAutoData);
     }
 
-    void Start()
+    private void Start()
     {
         animator = GetComponentInChildren<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
         // FIRE HELD
         if (Input.GetButton("Fire1"))
         {
             Initialize(semiAuto);
-            Fire();
 
+            FireResponse fireResponse = Fire();
             if (animator != null)
-                animator.SetBool("IsFiring", true);
+            {
+                if (fireResponse != FireResponse.NoAmmo && fireResponse != FireResponse.NoFireMode && fireResponse != FireResponse.Reloading)
+                {
+                    animator.SetBool("IsFiring", true);
+                }
+                else
+                {
+                    animator.SetBool("IsFiring", false);
+                }
+            }
         }
         else
         {
@@ -38,9 +46,9 @@ public class DualFireGunController : WeaponBase
         // RELOAD
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            bool didReload = TryReload();
 
-            if (animator != null)
+            if (animator != null && didReload)
                 animator.SetTrigger("Reload");
         }
     }

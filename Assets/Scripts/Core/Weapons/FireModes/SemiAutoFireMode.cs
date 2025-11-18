@@ -1,21 +1,29 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Collections;
 
 public class SemiAutoFireMode : IFireMode
 {
     public float FireRate => 1f / data.fireRate;
     public float Damage => data.damage;
     public float Range => data.range;
-    public float AmmoConsumption => data.ammoConsumption;
+    public int AmmoConsumption => data.ammoConsumption;
     public float KickPower => data.kickPower;
+    public int MaxAmmo => data.maxAmmo;
+    public int CurrentAmmo => currentAmmo;
+    public bool IsReloading => isReloading;
 
     private WeaponBase weapon;
     private readonly SemiAutoFireModeData data;
     private float lastFireTime;
 
+    private int currentAmmo;
+    private bool isReloading;
+
     public SemiAutoFireMode(SemiAutoFireModeData fireModeData)
     {
         data = fireModeData;
+        currentAmmo = fireModeData.maxAmmo;
     }
 
     public void Initialize(WeaponBase weapon)
@@ -23,10 +31,33 @@ public class SemiAutoFireMode : IFireMode
         this.weapon = weapon;
     }
 
-    public void Fire()
+    public IEnumerator Reload()
     {
-        if (Time.time - lastFireTime < FireRate || !weapon.TryUseAmmo(AmmoConsumption))
-            return;
+        isReloading = true;
+        yield return new WaitForSeconds(data.reloadTime);
+        isReloading = false;
+        currentAmmo = MaxAmmo;
+    }
+
+    public bool TryUseAmmo(int count)
+    {
+        if (currentAmmo - count < 0) 
+            return false;
+
+        currentAmmo -= count;
+        return true;
+    }
+
+    public FireResponse Fire()
+    {
+        if (isReloading) 
+            return FireResponse.Reloading;
+
+        if (Time.time - lastFireTime < FireRate)
+            return FireResponse.FireRateDelay;
+
+        if (!TryUseAmmo(AmmoConsumption))
+            return FireResponse.NoAmmo;
 
         lastFireTime = Time.time;
 
@@ -61,5 +92,7 @@ public class SemiAutoFireMode : IFireMode
         // Kick camera
         CinemachineImpulseSource impulseSource = weapon.cam.GetComponent<CinemachineImpulseSource>();
         impulseSource.GenerateImpulse(-weapon.cam.transform.forward * KickPower);
+
+        return FireResponse.Fired;
     }
 }
