@@ -24,6 +24,17 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public float avoidRadius = 2f;
     public LayerMask enemyMask;
 
+    [Header("Roaming")]
+    public float roamRadius = 10f;
+    public float roamInterval = 4f;
+
+    [Header("Roaming Restrictions")]
+    public string roamBlockedAreaName = "DoorBlock";
+    private int roamBlockedAreaMask;
+
+    private float nextRoamTime = 0f;
+    private bool isRoaming = true;
+
     private Transform player;
     private Vector3 lastKnownPlayerPos;
     private bool playerVisible;
@@ -51,54 +62,79 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
 
         if (health != null)
-        {
             health.OnDeath += HandleDeath;
-        }
 
-        // Let script control rotation, not the NavMeshAgent
         if (agent != null)
             agent.updateRotation = false;
+
+        // NEW — cache the blocked area mask
+        roamBlockedAreaMask = 1 << NavMesh.GetAreaFromName(roamBlockedAreaName);
     }
 
     private void Update()
     {
-        if (player == null || !health.IsAlive()) return;
+        if (!health.IsAlive()) return;
+
+        if (player == null || !playerVisible)
+        {
+            if (!isRoaming)
+                isRoaming = true;
+
+            HandleRoaming();
+            return;
+        }
+
+        HandleCombatMovement();
+    }
+
+    private void HandleRoaming()
+    {
+        if (Time.time < nextRoamTime)
+            return;
+
+        nextRoamTime = Time.time + roamInterval;
+
+        Vector3 randomOffset = UnityEngine.Random.insideUnitSphere * roamRadius;
+        randomOffset.y = 0;
+
+        Vector3 roamPos = transform.position + randomOffset;
+
+        if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        {
+            // NEW — skip forbidden areas
+            if ((1 << hit.mask) == roamBlockedAreaMask)
+                return;
+
+            MoveTo(hit.position);
+        }
+    }
+
+    private void HandleCombatMovement()
+    {
+        isRoaming = false;
 
         float dist = Vector3.Distance(transform.position, player.position);
 
-        if (!playerVisible)
+        if (dist > followStopDistance + 0.5f)
         {
             MoveTo(player.position);
         }
         else
         {
-            // --- Move toward player until in range ---
-            if (dist > followStopDistance + 0.5f)
-            {
-                MoveTo(player.position);
-            }
-            // --- Maintain combat range (strafe or back up slightly) ---
-            else
-            {
-                // If strafing is running, let coroutine handle lateral movement
-                if (strafeRoutine == null)
-                    strafeRoutine = StartCoroutine(StrafeRoutine());
+            if (strafeRoutine == null)
+                strafeRoutine = StartCoroutine(StrafeRoutine());
 
-                // Stay within range (don’t back off too much)
-                if (dist < followStopDistance - 1f)
-                    MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
-            }
-
-            AvoidOtherEnemies();
-
-            // Attack only if clear line of sight
-            if (attack != null && HasLineOfSightToPlayer())
-                attack.TryAttack(player);
+            if (dist < followStopDistance - 1f)
+                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
         }
+
+        AvoidOtherEnemies();
+
+        if (attack != null && HasLineOfSightToPlayer())
+            attack.TryAttack(player);
 
         FacePlayer();
     }
-
 
     private void FacePlayer()
     {
@@ -117,21 +153,30 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     // --- IAggro interface ---
     public void OnPlayerDetected(Transform playerTransform)
     {
+        isRoaming = false;
         player = playerTransform;
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
         if (strafeRoutine == null)
             strafeRoutine = StartCoroutine(StrafeRoutine());
+
+        // When aggroed, allow the agent to walk ANYWHERE (doors included)
+        agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnPlayerLost()
     {
         playerVisible = false;
+        isRoaming = true;
 
         if (strafeRoutine != null)
             StopCoroutine(strafeRoutine);
+
         strafeRoutine = null;
+
+        // When not aggro, restrict roaming again
+        agent.areaMask = ~roamBlockedAreaMask;
     }
 
     // --- IImpactable interface ---
@@ -147,15 +192,12 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         while (playerVisible && health.IsAlive())
         {
-            if (player == null)
-                yield break;
+            if (player == null) yield break;
 
             float dist = Vector3.Distance(transform.position, player.position);
 
-            // Only strafe while close enough
             if (dist <= followStopDistance + 1.5f)
             {
-                // Occasionally switch direction
                 if (Time.time >= nextStrafeSwitch)
                 {
                     strafeDir *= -1f;
@@ -167,13 +209,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
                 Vector3 targetPos = transform.position + side * strafeDistance;
 
                 if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
-                {
                     MoveTo(hit.position);
-                }
             }
             else
             {
-                // Too far — close the gap instead of strafing
                 MoveTo(player.position);
             }
 
@@ -195,8 +234,8 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             Vector3 dirAway = (transform.position - other.transform.position).normalized;
             Vector3 offset = dirAway * 0.5f;
 
-            // Move sideways if looking directly at another enemy
             float dot = Vector3.Dot(transform.forward, (other.transform.position - transform.position).normalized);
+
             if (dot > 0.5f)
             {
                 Vector3 sideStep = Vector3.Cross(Vector3.up, transform.forward).normalized *
@@ -204,7 +243,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
                 MoveTo(transform.position + sideStep);
             }
 
-            // Keep separation
             transform.position += offset * Time.deltaTime;
         }
     }
@@ -245,9 +283,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             vision.PlayerLost -= OnPlayerLost;
         }
         if (health != null)
-        {
             health.OnDeath -= HandleDeath;
-        }
     }
 
 #if UNITY_EDITOR
