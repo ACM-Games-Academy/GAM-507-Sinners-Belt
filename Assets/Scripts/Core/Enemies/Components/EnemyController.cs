@@ -13,6 +13,9 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public HealthComponent health;
     public NavMeshAgent agent;
 
+    [Header("Animation")]
+    public Animator animator;   // NEW
+
     [Header("Behavior")]
     public float followStopDistance = 6f;
     public float losRecheckInterval = 0.5f;
@@ -42,7 +45,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     private float nextStrafeSwitch;
     private float strafeDir = 1f;
 
-    // --- Public getters ---
     public Transform GetPlayer() => player;
     public bool CanSeePlayer() => playerVisible;
     public Vector3 GetLastKnownPlayerPos() => lastKnownPlayerPos;
@@ -55,6 +57,9 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         vision ??= GetComponent<VisionComponent>();
         agent ??= GetComponent<NavMeshAgent>();
 
+        // NEW
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+
         if (vision != null)
         {
             vision.PlayerDetected += OnPlayerDetected;
@@ -64,10 +69,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (health != null)
             health.OnDeath += HandleDeath;
 
-        if (agent != null)
-            agent.updateRotation = false;
-
-        // NEW — cache the blocked area mask
         roamBlockedAreaMask = 1 << NavMesh.GetAreaFromName(roamBlockedAreaName);
     }
 
@@ -75,12 +76,15 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     {
         if (!health.IsAlive()) return;
 
+        bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
+        animator?.SetBool("IsMoving", isMoving);   // NEW
+
         if (player == null || !playerVisible)
         {
             if (!isRoaming)
                 isRoaming = true;
 
-            HandleRoaming();
+            HandleRoaming(); 
             return;
         }
 
@@ -101,7 +105,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
-            // NEW — skip forbidden areas
             if ((1 << hit.mask) == roamBlockedAreaMask)
                 return;
 
@@ -131,7 +134,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         AvoidOtherEnemies();
 
         if (attack != null && HasLineOfSightToPlayer())
+        {
+            animator?.SetTrigger("Shoot");   // NEW — attack animation
             attack.TryAttack(player);
+        }
 
         FacePlayer();
     }
@@ -150,7 +156,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
     }
 
-    // --- IAggro interface ---
+
     public void OnPlayerDetected(Transform playerTransform)
     {
         isRoaming = false;
@@ -161,7 +167,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (strafeRoutine == null)
             strafeRoutine = StartCoroutine(StrafeRoutine());
 
-        // When aggroed, allow the agent to walk ANYWHERE (doors included)
         agent.areaMask = NavMesh.AllAreas;
     }
 
@@ -175,17 +180,15 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         strafeRoutine = null;
 
-        // When not aggro, restrict roaming again
         agent.areaMask = ~roamBlockedAreaMask;
     }
 
-    // --- IImpactable interface ---
     public void OnImpact(ImpactInfo data)
     {
+        animator?.SetTrigger("Hit");   // NEW — hit reaction animation
         health?.TakeDamage(data.Damage);
     }
 
-    // --- Strafing ---
     private IEnumerator StrafeRoutine()
     {
         nextStrafeSwitch = Time.time + strafeSwitchTime;
@@ -193,6 +196,8 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         while (playerVisible && health.IsAlive())
         {
             if (player == null) yield break;
+
+            animator?.SetBool("Strafe", true);   // NEW
 
             float dist = Vector3.Distance(transform.position, player.position);
 
@@ -220,10 +225,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             yield return new WaitForSeconds(strafeSpeed);
         }
 
+        animator?.SetBool("Strafe", false);  // NEW
         strafeRoutine = null;
     }
 
-    // --- Avoidance logic ---
     private void AvoidOtherEnemies()
     {
         Collider[] nearby = Physics.OverlapSphere(transform.position, avoidRadius, enemyMask);
@@ -270,9 +275,13 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
     private void HandleDeath()
     {
+        animator?.SetTrigger("Die");  
+
         movement?.StopMovement();
+        agent.isStopped = true;
+
+        Destroy(gameObject, 3f); // More time for animations
         enabled = false;
-        Destroy(gameObject, 2f);
     }
 
     private void OnDestroy()
