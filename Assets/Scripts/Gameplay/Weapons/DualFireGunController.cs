@@ -1,4 +1,6 @@
+
 using UnityEngine;
+
 
 public class DualFireGunController : WeaponBase
 {
@@ -6,6 +8,10 @@ public class DualFireGunController : WeaponBase
     private SemiAutoFireMode semiAuto;
 
     private Animator animator;
+
+    public GameObject crosshairUIShooting;
+
+    public GameObject crosshairnotShootingUI;
 
     private void Awake()
     {
@@ -30,10 +36,18 @@ public class DualFireGunController : WeaponBase
                 if (fireResponse != FireResponse.NoAmmo && fireResponse != FireResponse.NoFireMode && fireResponse != FireResponse.Reloading)
                 {
                     animator.SetBool("IsFiring", true);
+                    //Enable ShootingCrosshair UI
+                    if (crosshairUIShooting != null) crosshairUIShooting.SetActive(true);
+                    if (crosshairnotShootingUI != null) crosshairnotShootingUI.SetActive(false);
+
                 }
                 else
                 {
                     animator.SetBool("IsFiring", false);
+                    //Disable ShootingCrosshair UI
+                    if (crosshairUIShooting != null) crosshairUIShooting.SetActive(false);
+                    if (crosshairnotShootingUI != null) crosshairnotShootingUI.SetActive(true);
+
                 }
             }
         }
@@ -41,6 +55,12 @@ public class DualFireGunController : WeaponBase
         {
             if (animator != null)
                 animator.SetBool("IsFiring", false);
+
+            //Disable ShootingCrosshair UI
+            if (crosshairUIShooting != null) crosshairUIShooting.SetActive(false);
+            if (crosshairnotShootingUI != null) crosshairnotShootingUI.SetActive(true);
+
+
         }
 
         // RELOAD
