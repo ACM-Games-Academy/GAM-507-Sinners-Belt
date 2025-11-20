@@ -16,20 +16,20 @@ public class HealthComponent : MonoBehaviour, IHealth
     public event Action OnDeath;
 
     private Renderer rend;
-    private Material mat;
-    private Color originalColor;
+    // private Material mat;
+    // private Color originalColor;
 
     
 
     private void Awake()
     {
         currentHealth = maxHealth;
-        rend = GetComponent<Renderer>();
-        if (rend != null)
-        {
-            mat = rend.material; // this creates a unique material for this renderer
-            originalColor = mat.color;
-        }
+        // rend = GetComponent<Renderer>();
+        // if (rend != null)
+        // {
+        //     mat = rend.material; // this creates a unique material for this renderer
+        //     originalColor = mat.color;
+        // }
     }
 
     public void TakeDamage(float amount)
@@ -38,20 +38,20 @@ public class HealthComponent : MonoBehaviour, IHealth
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        StartCoroutine(DamageFlash());
+        // StartCoroutine(DamageFlash());
 
         if (currentHealth <= 0f)
             OnDeath?.Invoke();
     }
 
-    private IEnumerator DamageFlash()
-    {
-        if (mat == null) yield break;
+    // private IEnumerator DamageFlash()
+    // {
+    //     if (mat == null) yield break;
 
-        mat.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        mat.color = originalColor;
-    }
+    //     mat.color = Color.red;
+    //     yield return new WaitForSeconds(0.1f);
+    //     mat.color = originalColor;
+    // }
 
 
     public void Heal(float amount)
@@ -85,7 +85,7 @@ public class HealthComponent : MonoBehaviour, IHealth
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
-    //Flash Material on damage taken
+   
     
     
 
