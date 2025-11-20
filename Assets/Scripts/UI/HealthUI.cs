@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class HealthUI : MonoBehaviour
 {
@@ -8,15 +9,34 @@ public class HealthUI : MonoBehaviour
     [SerializeField] private HealthComponent targetHealth;
     [SerializeField] private Slider healthSlider;
 
+    [SerializeField] private Image healthFill;
+
     [SerializeField] private TextMeshProUGUI healthText;
 
     [SerializeField] private bool hideOnDeath = true;
 
+    [SerializeField] private Image[] extraFlashImages; 
+    [SerializeField]private Image HealthVignette;
+
+    public GameObject deathUI;
     public GameObject ammoUI; 
 
+    private Color originalFillColor;
+    private Color[] originalExtraColors;
+    private Coroutine flashRoutine;
 
     private void Start()
     {   
+
+        originalFillColor = healthFill.color;
+
+        // Store original colours images
+        if (extraFlashImages != null)
+        {
+            originalExtraColors = new Color[extraFlashImages.Length];
+            for (int i = 0; i < extraFlashImages.Length; i++)
+            originalExtraColors[i] = extraFlashImages[i].color;
+        }
 
         //Try get TextMeshProUGUI if not assigned
         if(healthText == null)
@@ -63,9 +83,6 @@ public class HealthUI : MonoBehaviour
 
         //Update health text
         healthText.text = $"{targetHealth.CurrentHealth} / {targetHealth.MaxHealth}"; //Display in number format?
-
-
-
     }
 
     private void OnDestroy()
@@ -79,14 +96,47 @@ public class HealthUI : MonoBehaviour
 
     private void UpdateHealthBar(float currentHealth, float maxHealth)
     {
+        //Update Slider, 
         healthSlider.maxValue = maxHealth;
         healthSlider.value = currentHealth;
 
-        // Debug.Log($"[HealthUI] Health updated: {currentHealth}/{maxHealth}", this);
-        // Debug.Log($"[HealthUI] Slider value: {healthSlider.value}/{healthSlider.maxValue}", this);
-
-        //Update health text
         healthText.text = $"{currentHealth} / {maxHealth}";
+
+        // Update vignette
+        if (HealthVignette != null)
+        {
+            float hp = currentHealth / maxHealth;
+            HealthVignette.color = new Color(1f, 0f, 0f, 1f - hp);
+        }
+
+        // FLASH UI ELEMENTS
+        if (flashRoutine != null)
+            StopCoroutine(flashRoutine);
+
+        flashRoutine = StartCoroutine(FlashDamageUI());
+    }
+
+    private IEnumerator FlashDamageUI()
+    {
+        // Turn all UI elements RED
+        healthFill.color = Color.red;
+
+        if (extraFlashImages != null)
+        {
+            foreach (var img in extraFlashImages)   
+                img.color = Color.red;
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        // Restore original colors
+        healthFill.color = originalFillColor;
+
+        if (extraFlashImages != null)
+        {
+            for (int i = 0; i < extraFlashImages.Length; i++)
+                extraFlashImages[i].color = originalExtraColors[i];
+        }
     }
 
     private void HandleDeath()
@@ -95,6 +145,7 @@ public class HealthUI : MonoBehaviour
         {
             healthSlider.gameObject.SetActive(false);
             healthText.gameObject.SetActive(false);
+            deathUI.SetActive(true);
 
             //ammo UI hide
             if (ammoUI != null)
@@ -102,8 +153,14 @@ public class HealthUI : MonoBehaviour
                 ammoUI.SetActive(false);
             }
 
+            //Enable Mouse
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
         }
     }
+
+    
 
 
 }
