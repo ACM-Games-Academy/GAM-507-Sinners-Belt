@@ -159,6 +159,8 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (lookDir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(lookDir);
+
+            // HARD LOCK (instant rotate)
             transform.rotation = targetRot;
         }
     }

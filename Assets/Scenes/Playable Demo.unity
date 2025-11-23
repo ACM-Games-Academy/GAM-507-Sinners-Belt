@@ -9415,16 +9415,32 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9599183
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.112621024
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.25594443
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.019127598
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 4.80521
+      value: -13.062
       objectReference: {fileID: 0}
     - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 80.79415
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1306856377191813983, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90.39804
+      value: -1.231
       objectReference: {fileID: 0}
     - target: {fileID: 1352946852976875654, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
       propertyPath: m_Layer
@@ -9914,6 +9930,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4952280355838396363, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
+      propertyPath: bulletTrailPrefab
+      value: 
+      objectReference: {fileID: 1532849759175910875, guid: 86daa5f4862b1a74e946bbfb957b931d, type: 3}
     - target: {fileID: 5029640528595410291, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -10567,7 +10587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51b53f3b451a2641aa7481d0514d16b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 300
   currentHealth: 10
 --- !u!114 &1917920877384902079
 MonoBehaviour:
