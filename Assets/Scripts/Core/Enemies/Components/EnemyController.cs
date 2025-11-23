@@ -14,7 +14,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public NavMeshAgent agent;
 
     [Header("Animation")]
-    public Animator animator;   // NEW
+    public Animator animator;
 
     [Header("Behavior")]
     public float followStopDistance = 6f;
@@ -77,7 +77,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (!health.IsAlive()) return;
 
         bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
-        animator?.SetBool("IsMoving", isMoving);   // NEW
+        animator?.SetBool("IsMoving", isMoving);  
 
         if (player == null || !playerVisible)
         {
@@ -135,11 +135,18 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         if (attack != null && HasLineOfSightToPlayer())
         {
-            animator?.SetTrigger("Shoot");   // NEW — attack animation
+            animator?.SetBool("IsShooting", true);
             attack.TryAttack(player);
+            StartCoroutine(ResetShootFlag());
         }
 
         FacePlayer();
+    }
+
+    private IEnumerator ResetShootFlag()
+    {
+        yield return null; // wait 1 frame
+        animator?.SetBool("IsShooting", false);
     }
 
     private void FacePlayer()
@@ -152,7 +159,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (lookDir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(lookDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+            transform.rotation = targetRot;
         }
     }
 
@@ -185,7 +192,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
     public void OnImpact(ImpactInfo data)
     {
-        animator?.SetTrigger("Hit");   // NEW — hit reaction animation
+        animator?.SetTrigger("Hit");  
         health?.TakeDamage(data.Damage);
     }
 
@@ -197,7 +204,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         {
             if (player == null) yield break;
 
-            animator?.SetBool("Strafe", true);   // NEW
+            animator?.SetBool("Strafe", true);
 
             float dist = Vector3.Distance(transform.position, player.position);
 
@@ -225,7 +232,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             yield return new WaitForSeconds(strafeSpeed);
         }
 
-        animator?.SetBool("Strafe", false);  // NEW
+        animator?.SetBool("Strafe", false); 
         strafeRoutine = null;
     }
 
