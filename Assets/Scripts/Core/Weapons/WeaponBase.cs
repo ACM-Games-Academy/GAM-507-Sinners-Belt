@@ -5,7 +5,7 @@ public abstract class WeaponBase : MonoBehaviour
 {
     [Header("Weapon Setup")]
     public Transform muzzlePoint;
-    public LayerMask hitMask;
+    public LayerMask negativeHitMask;
     public GameObject bulletTrailPrefab;
     public Camera cam;
     protected IFireMode fireMode;
@@ -51,7 +51,7 @@ public abstract class WeaponBase : MonoBehaviour
         float range = fireMode?.Range ?? 1000f;
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, range, hitMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, range, negativeHitMask))
             return hit.point;
 
         return ray.origin + ray.direction * range;

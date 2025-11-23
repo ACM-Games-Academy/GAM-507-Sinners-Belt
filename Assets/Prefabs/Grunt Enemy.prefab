@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 7451147560403248498}
   - component: {fileID: 2348928197658279761}
   - component: {fileID: 8157953493703857435}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Grunt Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -542,10 +542,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.8740761
+  m_Radius: 0.55
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.88160956, z: 0}
+  m_Center: {x: 0, y: 0.97, z: 0}
 --- !u!114 &6400312338002588065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,12 +574,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 0.25
   range: 20
-  bulletSpeed: 40
   shotsBeforeReload: 10
   reloadDuration: 2.5
-  projectilePrefab: {fileID: 178643061197957055, guid: d6e3a149c79d7044396baa6673493eb1, type: 3}
+  damage: 10
   firePoint: {fileID: 3052355468571147141}
-  meleeDamage: 10
+  bulletTrailPrefab: {fileID: 0}
+  trailSpeed: 200
 --- !u!114 &444923344633178801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,8 +652,6 @@ MonoBehaviour:
   vision: {fileID: 0}
   health: {fileID: 0}
   agent: {fileID: 0}
-  applyModelRotationFix: 0
-  modelRotationOffset: 30
   animator: {fileID: 6877848336857824727}
   followStopDistance: 15
   losRecheckInterval: 0.5
