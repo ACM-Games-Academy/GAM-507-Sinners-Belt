@@ -13,45 +13,53 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public HealthComponent health;
     public NavMeshAgent agent;
 
+    [Header("Animation")]
+    public Animator animator;
+
     [Header("Behavior")]
     public float followStopDistance = 6f;
-    public float lostSightDuration = 5f;
     public float losRecheckInterval = 0.5f;
 
-    [Header("Cover Settings")]
-    public float coverSearchRadius = 8f;
-    public float peekInterval = 3f;
-    public float peekDuration = 1.5f;
-    public float peekOffset = 1.2f;
-    public float coverScanRadius = 5f;
-    public LayerMask coverMask;
-    public LayerMask obstacleMask;
+    [Header("Combat Movement")]
+    public float strafeDistance = 2.5f;
+    public float strafeSpeed = 2f;
+    public float strafeSwitchTime = 2f;
+    public float avoidRadius = 2f;
+    public LayerMask enemyMask;
+
+    [Header("Roaming")]
+    public float roamRadius = 10f;
+    public float roamInterval = 4f;
+
+    [Header("Roaming Restrictions")]
+    public string roamBlockedAreaName = "DoorBlock";
+    private int roamBlockedAreaMask;
+
+    private float nextRoamTime = 0f;
+    private bool isRoaming = true;
 
     private Transform player;
     private Vector3 lastKnownPlayerPos;
-    private float lostSightTimer;
     private bool playerVisible;
+    private Coroutine strafeRoutine;
+    private float nextStrafeSwitch;
+    private float strafeDir = 1f;
 
-    private Vector3 coverPosition;
-    private Vector3 peekPosition;
-    private Coroutine coverRoutine;
-    private bool usingTallCover;
-
-    // --- Public getters ---
     public Transform GetPlayer() => player;
     public bool CanSeePlayer() => playerVisible;
     public Vector3 GetLastKnownPlayerPos() => lastKnownPlayerPos;
 
     private void Awake()
     {
-        // auto-assign components
         health ??= GetComponent<HealthComponent>();
         movement ??= GetComponent<MovementComponent>();
         attack ??= GetComponent<AttackComponent>();
         vision ??= GetComponent<VisionComponent>();
         agent ??= GetComponent<NavMeshAgent>();
 
-        // subscribe to events
+        // NEW
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+
         if (vision != null)
         {
             vision.PlayerDetected += OnPlayerDetected;
@@ -59,28 +67,86 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
 
         if (health != null)
-        {
             health.OnDeath += HandleDeath;
-            health.OnHealthChanged += HandleHealthChanged;
-        }
-    }
 
-    private void Start()
-    {
-        MoveToNearestCover("ShortCover");
+        roamBlockedAreaMask = 1 << NavMesh.GetAreaFromName(roamBlockedAreaName);
     }
 
     private void Update()
     {
-        if (player == null || !health.IsAlive()) return;
+        if (!health.IsAlive()) return;
 
-        // Attack if visible and has LOS
-        if (playerVisible && attack != null && HasLineOfSightToPlayer())
+        bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
+        animator?.SetBool("IsMoving", isMoving);  
+
+        if (player == null || !playerVisible)
         {
+            if (!isRoaming)
+                isRoaming = true;
+
+            HandleRoaming(); 
+            return;
+        }
+
+        HandleCombatMovement();
+    }
+
+    private void HandleRoaming()
+    {
+        if (Time.time < nextRoamTime)
+            return;
+
+        nextRoamTime = Time.time + roamInterval;
+
+        Vector3 randomOffset = UnityEngine.Random.insideUnitSphere * roamRadius;
+        randomOffset.y = 0;
+
+        Vector3 roamPos = transform.position + randomOffset;
+
+        if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        {
+            if ((1 << hit.mask) == roamBlockedAreaMask)
+                return;
+
+            MoveTo(hit.position);
+        }
+    }
+
+    private void HandleCombatMovement()
+    {
+        isRoaming = false;
+
+        float dist = Vector3.Distance(transform.position, player.position);
+
+        if (dist > followStopDistance + 0.5f)
+        {
+            MoveTo(player.position);
+        }
+        else
+        {
+            if (strafeRoutine == null)
+                strafeRoutine = StartCoroutine(StrafeRoutine());
+
+            if (dist < followStopDistance - 1f)
+                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+        }
+
+        AvoidOtherEnemies();
+
+        if (attack != null && HasLineOfSightToPlayer())
+        {
+            animator?.SetBool("IsShooting", true);
             attack.TryAttack(player);
+            StartCoroutine(ResetShootFlag());
         }
 
         FacePlayer();
+    }
+
+    private IEnumerator ResetShootFlag()
+    {
+        yield return null; // wait 1 frame
+        animator?.SetBool("IsShooting", false);
     }
 
     private void FacePlayer()
@@ -93,103 +159,106 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (lookDir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(lookDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 6f);
+
+            // HARD LOCK (instant rotate)
+            transform.rotation = targetRot;
         }
     }
 
-    // --- Interface: IAggro ---
+
     public void OnPlayerDetected(Transform playerTransform)
     {
+        isRoaming = false;
         player = playerTransform;
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
-        if (coverRoutine != null)
-            StopCoroutine(coverRoutine);
-        coverRoutine = StartCoroutine(CoverRoutine());
+        if (strafeRoutine == null)
+            strafeRoutine = StartCoroutine(StrafeRoutine());
+
+        agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnPlayerLost()
     {
         playerVisible = false;
+        isRoaming = true;
+
+        if (strafeRoutine != null)
+            StopCoroutine(strafeRoutine);
+
+        strafeRoutine = null;
+
+        agent.areaMask = ~roamBlockedAreaMask;
     }
 
-    // --- Interface: IImpactable ---
     public void OnImpact(ImpactInfo data)
     {
-        if (health != null)
-            health.TakeDamage(data.Damage);
+        animator?.SetTrigger("Hit");  
+        health?.TakeDamage(data.Damage);
     }
 
-    private void HandleHealthChanged(float current, float max)
+    private IEnumerator StrafeRoutine()
     {
-        if (current <= max * 0.5f && !usingTallCover)
+        nextStrafeSwitch = Time.time + strafeSwitchTime;
+
+        while (playerVisible && health.IsAlive())
         {
-            usingTallCover = true;
-            MoveToNearestCover("TallCover");
-        }
-    }
+            if (player == null) yield break;
 
-    // --- Main AI Cover Routine ---
-    private IEnumerator CoverRoutine()
-    {
-        while (health.IsAlive())
-        {
-            yield return new WaitForSeconds(peekInterval);
+            animator?.SetBool("Strafe", true);
 
-            if (player == null || !playerVisible)
-                continue;
+            float dist = Vector3.Distance(transform.position, player.position);
 
-            Vector3 toPlayer = (player.position - coverPosition).normalized;
-            Vector3 sideDir = Vector3.Cross(Vector3.up, toPlayer);
-
-            // pick side that gives LOS break
-            Vector3 leftPeek = coverPosition - sideDir * peekOffset;
-            Vector3 rightPeek = coverPosition + sideDir * peekOffset;
-
-            bool leftVisible = HasLineOfSightFrom(leftPeek);
-            bool rightVisible = HasLineOfSightFrom(rightPeek);
-
-            Vector3 chosenPeek = (!leftVisible && rightVisible) ? leftPeek :
-                                 (leftVisible && !rightVisible) ? rightPeek :
-                                 (UnityEngine.Random.value > 0.5f ? rightPeek : leftPeek);
-
-            if (NavMesh.SamplePosition(chosenPeek + toPlayer * 0.8f, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+            if (dist <= followStopDistance + 1.5f)
             {
-                peekPosition = hit.position;
-                MoveTo(peekPosition);
-
-                while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
-                    yield return null;
-
-                float endTime = Time.time + peekDuration;
-                while (Time.time < endTime)
+                if (Time.time >= nextStrafeSwitch)
                 {
-                    if (playerVisible && HasLineOfSightToPlayer())
-                        attack.TryAttack(player);
-                    yield return null;
+                    strafeDir *= -1f;
+                    nextStrafeSwitch = Time.time + strafeSwitchTime;
                 }
 
-                MoveTo(coverPosition);
-                while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
-                    yield return null;
+                Vector3 toPlayer = (player.position - transform.position).normalized;
+                Vector3 side = Vector3.Cross(Vector3.up, toPlayer) * strafeDir;
+                Vector3 targetPos = transform.position + side * strafeDistance;
+
+                if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                    MoveTo(hit.position);
             }
+            else
+            {
+                MoveTo(player.position);
+            }
+
+            FacePlayer();
+            yield return new WaitForSeconds(strafeSpeed);
         }
+
+        animator?.SetBool("Strafe", false); 
+        strafeRoutine = null;
     }
 
-    private bool HasLineOfSightFrom(Vector3 position)
+    private void AvoidOtherEnemies()
     {
-        if (player == null) return false;
-
-        Vector3 origin = position + Vector3.up * 1.5f;
-        Vector3 dir = (player.position + Vector3.up * 1f) - origin;
-
-        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
+        Collider[] nearby = Physics.OverlapSphere(transform.position, avoidRadius, enemyMask);
+        foreach (var other in nearby)
         {
-            return hit.collider.CompareTag("Player");
-        }
+            if (other.gameObject == gameObject) continue;
 
-        return true;
+            Vector3 dirAway = (transform.position - other.transform.position).normalized;
+            Vector3 offset = dirAway * 0.5f;
+
+            float dot = Vector3.Dot(transform.forward, (other.transform.position - transform.position).normalized);
+
+            if (dot > 0.5f)
+            {
+                Vector3 sideStep = Vector3.Cross(Vector3.up, transform.forward).normalized *
+                                   (UnityEngine.Random.value > 0.5f ? 1 : -1);
+                MoveTo(transform.position + sideStep);
+            }
+
+            transform.position += offset * Time.deltaTime;
+        }
     }
 
     private bool HasLineOfSightToPlayer()
@@ -199,69 +268,29 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         Vector3 origin = transform.position + Vector3.up * 1.5f;
         Vector3 dir = (player.position + Vector3.up * 1f) - origin;
 
-        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
+        if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
         {
-            if (!hit.collider.CompareTag("Player"))
-                return false;
+            if (hit.collider.CompareTag("Enemy")) return false;
+            return hit.collider.CompareTag("Player");
         }
 
-        return true;
-    }
-
-    public void MoveToNearestCover(string tag)
-    {
-        Collider[] covers = Physics.OverlapSphere(transform.position, coverScanRadius, coverMask);
-        Collider bestCover = null;
-        float bestDist = Mathf.Infinity;
-
-        foreach (var c in covers)
-        {
-            if (!c.CompareTag(tag)) continue;
-            float dist = Vector3.Distance(transform.position, c.transform.position);
-
-            // Check which side is out of player LOS
-            if (player != null)
-            {
-                Vector3 toCover = c.transform.position - player.position;
-                Vector3 losOrigin = player.position + Vector3.up * 1.5f;
-                Vector3 losDir = toCover.normalized;
-
-                if (Physics.Raycast(losOrigin, losDir, out RaycastHit hit, vision.viewRadius, obstacleMask | coverMask))
-                {
-                    if (!hit.collider.CompareTag(tag)) continue; // not actually hidden behind cover
-                }
-            }
-
-            if (dist < bestDist)
-            {
-                bestCover = c;
-                bestDist = dist;
-            }
-        }
-
-        if (bestCover != null && NavMesh.SamplePosition(bestCover.transform.position, out NavMeshHit hitNav, 2f, NavMesh.AllAreas))
-        {
-            MoveTo(hitNav.position);
-            coverPosition = hitNav.position;
-        }
-        else
-        {
-            // fallback: move toward last known player position
-            MoveTo(lastKnownPlayerPos);
-        }
+        return false;
     }
 
     public void MoveTo(Vector3 destination)
     {
-        if (movement != null)
-            movement.MoveTo(destination);
+        movement?.MoveTo(destination);
     }
 
     private void HandleDeath()
     {
+        animator?.SetTrigger("Die");  
+
         movement?.StopMovement();
+        agent.isStopped = true;
+
+        Destroy(gameObject, 3f); // More time for animations
         enabled = false;
-        Destroy(gameObject, 2f);
     }
 
     private void OnDestroy()
@@ -272,20 +301,14 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             vision.PlayerLost -= OnPlayerLost;
         }
         if (health != null)
-        {
             health.OnDeath -= HandleDeath;
-            health.OnHealthChanged -= HandleHealthChanged;
-        }
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, coverScanRadius);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(coverPosition, 0.3f);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(peekPosition, 0.3f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, avoidRadius);
     }
+#endif
 }

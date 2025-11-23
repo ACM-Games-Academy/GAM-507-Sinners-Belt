@@ -7,7 +7,7 @@ using System.Collections;
 public class HealthComponent : MonoBehaviour, IHealth
 {
     [SerializeField] private float maxHealth = 100f;
-    public float currentHealth;
+    [SerializeField] private float currentHealth;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -16,19 +16,24 @@ public class HealthComponent : MonoBehaviour, IHealth
     public event Action OnDeath;
 
     private Renderer rend;
-    private Material mat;
-    private Color originalColor;
+    // private Material mat;
+    // private Color originalColor;
 
     
 
     private void Awake()
     {
         currentHealth = maxHealth;
-        rend = GetComponent<Renderer>();
-        if (rend != null)
+        // rend = GetComponent<Renderer>();
+        // if (rend != null)
+        // {
+        //     mat = rend.material; // this creates a unique material for this renderer
+        //     originalColor = mat.color;
+        // }
+
+        if (CompareTag("Player"))
         {
-            mat = rend.material; // this creates a unique material for this renderer
-            originalColor = mat.color;
+            StartCoroutine(RegenerateHealth());
         }
     }
 
@@ -38,20 +43,20 @@ public class HealthComponent : MonoBehaviour, IHealth
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        StartCoroutine(DamageFlash());
+        // StartCoroutine(DamageFlash());
 
         if (currentHealth <= 0f)
             OnDeath?.Invoke();
     }
 
-    private IEnumerator DamageFlash()
-    {
-        if (mat == null) yield break;
+    // private IEnumerator DamageFlash()
+    // {
+    //     if (mat == null) yield break;
 
-        mat.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        mat.color = originalColor;
-    }
+    //     mat.color = Color.red;
+    //     yield return new WaitForSeconds(0.1f);
+    //     mat.color = originalColor;
+    // }
 
 
     public void Heal(float amount)
@@ -85,8 +90,18 @@ public class HealthComponent : MonoBehaviour, IHealth
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
-    //Flash Material on damage taken
-    
-    
+    private IEnumerator RegenerateHealth()
+    {
+        while (IsAlive())
+        {
+            if (currentHealth < maxHealth)
+            {
+                float newHealth = Math.Min(currentHealth + (15f * Time.deltaTime), maxHealth);
+                currentHealth = newHealth;
+                OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            }
 
+            yield return null;
+        }
+    }
 }

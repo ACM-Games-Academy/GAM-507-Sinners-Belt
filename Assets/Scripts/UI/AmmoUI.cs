@@ -40,19 +40,20 @@ public class AmmoUI : MonoBehaviour
             }
         }
 
-        ammoSlider.maxValue = weapon.maxAmmo;
-        ammoSlider.value = weapon.ammo;
+        ammoSlider.maxValue = weapon.GetMaxAmmo();
+        ammoSlider.value = weapon.GetCurrentAmmo();
         UpdateAmmoText();
     }
 
     private void Update()
     {
-        ammoSlider.value = weapon.ammo;
+        ammoSlider.maxValue = weapon.GetMaxAmmo();
+        ammoSlider.value = weapon.GetCurrentAmmo();
         UpdateAmmoText();
     }
 
     private void UpdateAmmoText()
     {
-        ammoText.text = $"{weapon.ammo} / {weapon.maxAmmo}";
+        ammoText.text = $"{weapon.GetCurrentAmmo()} / {weapon.GetMaxAmmo()}";
     }
 }

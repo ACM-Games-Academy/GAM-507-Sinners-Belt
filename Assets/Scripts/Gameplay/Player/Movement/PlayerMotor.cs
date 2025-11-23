@@ -8,6 +8,8 @@ public class PlayerMotor : MonoBehaviour
     public InputReader input;   
 
      public GroundCheck groundCheck;
+
+     
     
 
     [Header("Movement Settings")]
@@ -43,16 +45,6 @@ public class PlayerMotor : MonoBehaviour
     private bool prevDashPressed = false;
 
     public int AvailableDashes => availableDashes;
-
-    [Header("Crouch Settings")]
-
-    private float crouchHeight = 1f;
-    private float standHeight = 2f;
-    private float crouchSpeed = 10f;
-    private bool wasCrouching = false;
-
-
-
     private CharacterController controller;
     private Vector3 velocity;
 
@@ -62,10 +54,20 @@ public class PlayerMotor : MonoBehaviour
 
     private bool isGrounded;
 
+    private Animator animator;
+
+    [Header("Death Settings")]
+    [SerializeField] private HealthComponent playerHealth;
+    [SerializeField] private MonoBehaviour shootScript; 
+
+    [SerializeField] private CinemachineCamera playerCamera;
+
+
    
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -75,12 +77,23 @@ public class PlayerMotor : MonoBehaviour
         HandleJumpCharge();
         HandleDash();
         HandleCrouch();
+
+
     }
 
     private void Start()
     {
         dashRechargeTimers = new float[(int)dashAmount];
         availableDashes = (int)dashAmount;
+
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath += OnDeath;
+        }
+
+        //Lock Cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void HandlePlayerRotation()
@@ -129,6 +142,13 @@ public class PlayerMotor : MonoBehaviour
         motion += velocity;
 
         controller.Move(motion * Time.deltaTime);
+
+        //Animator Updates
+         bool isMoving = moveDirection.sqrMagnitude > 0.01f && currentlyGrounded;
+
+        animator.SetBool("IsWalking", isMoving);
+        animator.SetBool("IsSprinting", input.IsSprinting && isMoving);
+
 
         if (currentlyGrounded)
             lastLandTime = Time.time;
@@ -257,5 +277,32 @@ public class PlayerMotor : MonoBehaviour
         float targetHeight = input.IsCrouching ? 1f : 2f;
         controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * 10f);
     }
+
+  
+    public void DisableMotor()
+    {
+        this.enabled = false;
+    }
+
+    private void OnDeath()
+    {
+        DisableMotor();
+
+        if (shootScript != null)
+        {
+            shootScript.enabled = false;
+        }
+
+        if (playerCamera != null)
+        {
+            playerCamera.enabled = false;
+        }
+
+
+    }
+
+
+
+
 
 }
