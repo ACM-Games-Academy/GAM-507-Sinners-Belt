@@ -657,7 +657,7 @@ GameObject:
   - component: {fileID: 107037906}
   - component: {fileID: 107037905}
   - component: {fileID: 107037904}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Storage Door Trigger Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2134,6 +2134,63 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1001 &552980100
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_Name
+      value: Clanker
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 93.46349
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 14.265835
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3297934911262987578, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
 --- !u!1 &559566251
 GameObject:
   m_ObjectHideFlags: 0
@@ -6133,6 +6190,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6780673595941983792, guid: f8eeeda3b29030643b32fd0061ffb7c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1450406804}
+    - targetCorrespondingSourceObject: {fileID: 6780673595941983792, guid: f8eeeda3b29030643b32fd0061ffb7c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1450406808}
     - targetCorrespondingSourceObject: {fileID: 1437495446136300405, guid: f8eeeda3b29030643b32fd0061ffb7c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1080817259}
@@ -7593,6 +7653,23 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2674709565317810855, guid: 9f7bde41d11303542a0f42196c1c0584, type: 3}
+--- !u!114 &1450406808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080817255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_Size: {x: 0.06912177, y: 0.1889114, z: 0.19897047}
+  m_Center: {x: 0.0762209, y: 0.080482416, z: -0.030513972}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &1456441152
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9906,8 +9983,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedVersion: 0
-  m_Size: {x: 4, y: 3, z: 0.29020143}
-  m_Center: {x: 0, y: 1, z: 0.08959436}
+  m_Size: {x: 4, y: 3, z: 0.23937644}
+  m_Center: {x: 0, y: 1, z: -0.021125384}
   m_Area: 3
   m_AffectedAgents: ffffffff
 --- !u!114 &1926036907
@@ -12201,3 +12278,4 @@ SceneRoots:
   - {fileID: 2119147896}
   - {fileID: 711945550}
   - {fileID: 1376417347}
+  - {fileID: 552980100}

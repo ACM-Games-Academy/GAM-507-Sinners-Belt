@@ -57,7 +57,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         vision ??= GetComponent<VisionComponent>();
         agent ??= GetComponent<NavMeshAgent>();
 
-        // NEW
         if (animator == null) animator = GetComponentInChildren<Animator>();
 
         if (vision != null)
@@ -69,7 +68,9 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (health != null)
             health.OnDeath += HandleDeath;
 
-        roamBlockedAreaMask = 1 << NavMesh.GetAreaFromName(roamBlockedAreaName);
+        // get the bitmask for the named area (1 << areaIndex)
+        int areaIndex = NavMesh.GetAreaFromName(roamBlockedAreaName);
+        roamBlockedAreaMask = 1 << areaIndex;
     }
 
     private void Update()
@@ -77,14 +78,14 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (!health.IsAlive()) return;
 
         bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
-        animator?.SetBool("IsMoving", isMoving);  
+        animator?.SetBool("IsMoving", isMoving);
 
         if (player == null || !playerVisible)
         {
             if (!isRoaming)
                 isRoaming = true;
 
-            HandleRoaming(); 
+            HandleRoaming();
             return;
         }
 
@@ -103,9 +104,11 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         Vector3 roamPos = transform.position + randomOffset;
 
+        // Sample with all areas, then check the hit.mask against the blocked mask
         if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
-            if ((1 << hit.mask) == roamBlockedAreaMask)
+            // hit.mask is already a bitmask for the area; compare directly
+            if (hit.mask == roamBlockedAreaMask)
                 return;
 
             MoveTo(hit.position);
@@ -165,7 +168,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
     }
 
-
     public void OnPlayerDetected(Transform playerTransform)
     {
         isRoaming = false;
@@ -173,10 +175,12 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
+        // ensure agent can use all areas while chasing
+        if (agent != null)
+            agent.areaMask = NavMesh.AllAreas;
+
         if (strafeRoutine == null)
             strafeRoutine = StartCoroutine(StrafeRoutine());
-
-        agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnPlayerLost()
@@ -189,12 +193,14 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         strafeRoutine = null;
 
-        agent.areaMask = ~roamBlockedAreaMask;
+        // Allow all areas except the blocked one (valid bitmask)
+        if (agent != null)
+            agent.areaMask = NavMesh.AllAreas & ~roamBlockedAreaMask;
     }
 
     public void OnImpact(ImpactInfo data)
     {
-        animator?.SetTrigger("Hit");  
+        animator?.SetTrigger("Hit");
         health?.TakeDamage(data.Damage);
     }
 
@@ -234,7 +240,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             yield return new WaitForSeconds(strafeSpeed);
         }
 
-        animator?.SetBool("Strafe", false); 
+        animator?.SetBool("Strafe", false);
         strafeRoutine = null;
     }
 
@@ -257,7 +263,11 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
                 MoveTo(transform.position + sideStep);
             }
 
-            transform.position += offset * Time.deltaTime;
+            // move the agent using agent.Move instead of directly changing transform.position
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.Move(offset * Time.deltaTime);
+            }
         }
     }
 
@@ -265,7 +275,8 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     {
         if (player == null) return false;
 
-        Vector3 origin = transform.position + Vector3.up * 1.5f;
+        // offset the ray origin slightly forward so it doesn't start inside nearby geometry
+        Vector3 origin = transform.position + Vector3.up * 1.5f + transform.forward * 0.2f;
         Vector3 dir = (player.position + Vector3.up * 1f) - origin;
 
         if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
@@ -284,10 +295,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
     private void HandleDeath()
     {
-        animator?.SetTrigger("Die");  
+        animator?.SetTrigger("Die");
 
         movement?.StopMovement();
-        agent.isStopped = true;
+        if (agent != null) agent.isStopped = true;
 
         Destroy(gameObject, 3f); // More time for animations
         enabled = false;
