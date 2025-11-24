@@ -1,0 +1,181 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "3161908922",
+    "Type": "User",
+    "GUID": "{7208E510-6ECA-4FF4-A783-925973B32422}",
+    "Language": "SFX",
+    "Hash": "{84AD91B1-4273-A7CF-49D0-8A5167429AC0}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main",
+    "ShortName": "Main",
+    "Path": "Main.bnk",
+    "Media": [
+     {
+      "Id": "43063051",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shoe Step Metal Hard A.wav",
+      "CachePath": "F3/{F3BCEE7B-44D7-7B5F-E2E9-D84D58B736CC}.wem"
+     },
+     {
+      "Id": "55383908",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shoe Step Metal Hard B.wav",
+      "CachePath": "94/{940AE926-E905-6279-D3B4-7685AD4948C4}.wem"
+     },
+     {
+      "Id": "95498405",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Arming a Sci-Fi Gun.wav",
+      "CachePath": "BD/{BD484311-867D-ECE9-EB53-A15D11241A29}.wem"
+     },
+     {
+      "Id": "104268671",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Gun SFX.wav",
+      "CachePath": "4D/{4DCA6177-01B3-1B89-DBC9-C5B09698C498}.wem"
+     },
+     {
+      "Id": "353987337",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shoe Step Metal Hard C.wav",
+      "CachePath": "98/{98ECA332-9B0B-B3D0-D6CE-D08D43D27F72}.wem"
+     },
+     {
+      "Id": "520935248",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "AAA Game Door Close.wav",
+      "CachePath": "40/{4004FD0E-F855-839B-34AE-56BFAC8F8BDB}.wem"
+     },
+     {
+      "Id": "592486134",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "AAA Game Door Open.wav",
+      "CachePath": "8E/{8E0A16D6-B538-B1BB-A2B8-8013116694B0}.wem"
+     },
+     {
+      "Id": "641502160",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shoe Step Metal Hard E.wav",
+      "CachePath": "7F/{7F0C8C17-9D33-2FF6-F3C1-A98926571B7F}.wem"
+     },
+     {
+      "Id": "1034828718",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shoe Step Metal Hard D.wav",
+      "CachePath": "B1/{B124193B-6D21-B3D3-B0B8-E4615D90648F}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2292458263",
+      "Name": "Play_Door_Close",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Door_Close",
+      "GUID": "{99680F6E-0CA0-481A-B1B2-FFCF66A4F098}",
+      "MaxAttenuation": "20",
+      "DurationType": "OneShot",
+      "DurationMin": "2.01",
+      "DurationMax": "2.01",
+      "MediaRefs": [
+       {
+        "Id": "520935248"
+       }
+      ]
+     },
+     {
+      "Id": "1660008929",
+      "Name": "Play_Door_Open",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Door_Open",
+      "GUID": "{08ED9E33-01AB-481D-8BE2-6BAC54DFB252}",
+      "MaxAttenuation": "20",
+      "DurationType": "OneShot",
+      "DurationMin": "3",
+      "DurationMax": "3",
+      "MediaRefs": [
+       {
+        "Id": "592486134"
+       }
+      ]
+     },
+     {
+      "Id": "3854155799",
+      "Name": "Play_Footsteps",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Footsteps",
+      "GUID": "{AAF35C3B-3EB8-4D48-931C-FC7C7C8FFF52}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.6262812",
+      "DurationMax": "0.87024945",
+      "MediaRefs": [
+       {
+        "Id": "43063051"
+       },
+       {
+        "Id": "55383908"
+       },
+       {
+        "Id": "353987337"
+       },
+       {
+        "Id": "641502160"
+       },
+       {
+        "Id": "1034828718"
+       }
+      ]
+     },
+     {
+      "Id": "2622995180",
+      "Name": "Play_Gun",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Gun",
+      "GUID": "{ACE59757-BB17-426A-A5F9-3CA9A5C06698}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.32032645",
+      "DurationMax": "0.32032645",
+      "MediaRefs": [
+       {
+        "Id": "104268671"
+       }
+      ]
+     },
+     {
+      "Id": "1910506537",
+      "Name": "Play_Reload",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Reload",
+      "GUID": "{79E3D73B-91B3-4F29-AF7D-ADA0E2D9C8B2}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.371678",
+      "DurationMax": "1.371678",
+      "MediaRefs": [
+       {
+        "Id": "95498405"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{93106C8E-0C37-C317-6E90-7E6D36F9A6BB}"
+ }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{7B5DD0A7-E3E1-4AC7-9A61-2E74C66AED91}" SchemaVersion="123">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{7B5DD0A7-E3E1-4AC7-9A61-2E74C66AED91}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="Main" ID="{7208E510-6ECA-4FF4-A783-925973B32422}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_Gun" ID="{ACE59757-BB17-426A-A5F9-3CA9A5C06698}" WorkUnitID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Door_Close" ID="{99680F6E-0CA0-481A-B1B2-FFCF66A4F098}" WorkUnitID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Door_Open" ID="{08ED9E33-01AB-481D-8BE2-6BAC54DFB252}" WorkUnitID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Footsteps" ID="{AAF35C3B-3EB8-4D48-931C-FC7C7C8FFF52}" WorkUnitID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Reload" ID="{79E3D73B-91B3-4F29-AF7D-ADA0E2D9C8B2}" WorkUnitID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>
