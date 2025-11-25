@@ -4,6 +4,7 @@ using System;
 /// <summary>
 /// Very simple vision component that raises events when it sees the player (by tag).
 /// Uses OverlapSphere + line-of-sight raycast for reliability.
+/// Adds memory so enemy doesn't instantly lose sight.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class VisionComponent : MonoBehaviour
@@ -22,6 +23,8 @@ public class VisionComponent : MonoBehaviour
     public event Action PlayerLost;
 
     private Transform currentPlayer;
+    private float lastSeenTime = 0f;
+    public float memoryDuration = 1f; // seconds to remember player after losing LOS
 
     private void Update()
     {
@@ -30,15 +33,10 @@ public class VisionComponent : MonoBehaviour
 
     private void ScanForPlayer()
     {
-        // OverlapSphere to find potential candidates (cheap and robust)
         Collider[] hits = Physics.OverlapSphere(transform.position, viewRadius, playerMask);
-        if (hits.Length == 0)
-        {
-            if (currentPlayer != null) { currentPlayer = null; PlayerLost?.Invoke(); }
-            return;
-        }
 
-        // pick the first valid player in view cone and with line of sight
+        Transform detected = null;
+
         foreach (var c in hits)
         {
             if (c == null || !c.gameObject.CompareTag(playerTag)) continue;
@@ -47,27 +45,34 @@ public class VisionComponent : MonoBehaviour
             float dotAngle = Vector3.Angle(transform.forward, dir);
             if (dotAngle > viewAngle * 0.5f) continue;
 
-            // raycast slightly above origin to avoid ground clipping
-            if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, out RaycastHit hit, viewRadius, obstacleMask | playerMask))
+            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, out RaycastHit hit, viewRadius, obstacleMask | playerMask))
             {
-                // nothing hit? treat as lost
-                continue;
-            }
-
-            // check that what we hit is the player
-            if (((1 << hit.collider.gameObject.layer) & playerMask.value) != 0)
-            {
-                if (currentPlayer == null || currentPlayer != c.transform)
+                if (((1 << hit.collider.gameObject.layer) & playerMask.value) != 0)
                 {
-                    currentPlayer = c.transform;
-                    PlayerDetected?.Invoke(currentPlayer);
+                    detected = c.transform;
+                    break;
                 }
-                return;
             }
         }
 
-        // if loop completes and no valid player found:
-        if (currentPlayer != null) { currentPlayer = null; PlayerLost?.Invoke(); }
+        if (detected != null)
+        {
+            if (currentPlayer != detected)
+            {
+                currentPlayer = detected;
+                PlayerDetected?.Invoke(currentPlayer);
+            }
+            lastSeenTime = Time.time;
+        }
+        else
+        {
+            // only lose player after memoryDuration
+            if (currentPlayer != null && Time.time - lastSeenTime > memoryDuration)
+            {
+                currentPlayer = null;
+                PlayerLost?.Invoke();
+            }
+        }
     }
 
     public bool CanSee(Transform target)
@@ -78,7 +83,6 @@ public class VisionComponent : MonoBehaviour
         float angle = Vector3.Angle(transform.forward, dir);
         if (angle > viewAngle * 0.5f) return false;
 
-        // line-of-sight raycast check
         if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, out RaycastHit hit, viewRadius, obstacleMask | playerMask))
         {
             return hit.transform == target;

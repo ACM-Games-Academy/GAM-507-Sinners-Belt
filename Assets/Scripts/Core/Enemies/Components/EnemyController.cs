@@ -80,7 +80,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
         animator?.SetBool("IsMoving", isMoving);
 
-        if (player == null || !playerVisible)
+        if (player == null && !playerVisible)
         {
             if (!isRoaming)
                 isRoaming = true;
@@ -89,7 +89,19 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             return;
         }
 
+        // Combat: determine target to face
+        Vector3 faceTarget = playerVisible && player != null
+            ? player.position
+            : lastKnownPlayerPos;
+
+        if (!isRoaming)
+            FaceTarget(faceTarget);
+
         HandleCombatMovement();
+
+        // Update last known position while player is visible
+        if (playerVisible && player != null)
+            lastKnownPlayerPos = player.position;
     }
 
     private void HandleRoaming()
@@ -168,6 +180,18 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
     }
 
+    private void FaceTarget(Vector3 targetPos)
+    {
+        Vector3 lookDir = targetPos - transform.position;
+        lookDir.y = 0f;
+
+        if (lookDir.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5f);
+            transform.rotation = targetRot;
+        }
+    }
+
     public void OnPlayerDetected(Transform playerTransform)
     {
         isRoaming = false;
@@ -175,7 +199,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
-        // ensure agent can use all areas while chasing
         if (agent != null)
             agent.areaMask = NavMesh.AllAreas;
 
@@ -193,7 +216,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         strafeRoutine = null;
 
-        // Allow all areas except the blocked one (valid bitmask)
         if (agent != null)
             agent.areaMask = NavMesh.AllAreas & ~roamBlockedAreaMask;
     }

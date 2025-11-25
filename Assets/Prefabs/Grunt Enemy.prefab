@@ -578,7 +578,7 @@ MonoBehaviour:
   reloadDuration: 2.5
   damage: 10
   firePoint: {fileID: 3052355468571147141}
-  bulletTrailPrefab: {fileID: 0}
+  bulletTrailPrefab: {fileID: 1532849759175910875, guid: 86daa5f4862b1a74e946bbfb957b931d, type: 3}
   trailSpeed: 200
 --- !u!114 &444923344633178801
 MonoBehaviour:
@@ -614,7 +614,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 240
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -647,11 +647,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30d6dc16dab4f2749b16577326845fd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement: {fileID: 0}
-  attack: {fileID: 0}
-  vision: {fileID: 0}
-  health: {fileID: 0}
-  agent: {fileID: 0}
+  movement: {fileID: 3120778771260602936}
+  attack: {fileID: 4952280355838396363}
+  vision: {fileID: 444923344633178801}
+  health: {fileID: 6400312338002588065}
+  agent: {fileID: 2398372770095020654}
   animator: {fileID: 6877848336857824727}
   followStopDistance: 15
   losRecheckInterval: 0.5
