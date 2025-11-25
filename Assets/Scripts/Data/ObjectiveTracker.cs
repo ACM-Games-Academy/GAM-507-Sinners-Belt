@@ -13,7 +13,7 @@ public class ObjectiveTracker : MonoBehaviour
 
     public void SetFlag(string flag, bool value)
     {
-        objectiveFlags.Add(flag, value);
+        objectiveFlags.TryAdd(flag, value);
     }
 
     public bool GetFlag(string flag)
