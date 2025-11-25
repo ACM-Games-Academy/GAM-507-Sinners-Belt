@@ -1206,7 +1206,7 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
     spawnPosition: {x: 18, y: 2.62, z: 17.5}
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
-    spawnPosition: {x: 26.5, y: 2.62, z: 17.5}
+    spawnPosition: {x: 20.8, y: 2.62, z: 9.4}
 --- !u!65 &204460527
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9712,11 +9712,11 @@ MonoBehaviour:
   isEnabled: 1
   waves:
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
-    spawnPosition: {x: 21.1, y: 2.62, z: 1.75}
+    spawnPosition: {x: 19.7, y: 2.62, z: 1.75}
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
-    spawnPosition: {x: 23.2, y: 2.62, z: 1.19}
+    spawnPosition: {x: 15.6, y: 2.62, z: 10.49}
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
-    spawnPosition: {x: 17.9, y: 2.62, z: 4.65}
+    spawnPosition: {x: 16.8, y: 2.62, z: 6.45}
 --- !u!65 &1839394653
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11176,7 +11176,6 @@ MonoBehaviour:
     m_Bits: 64
   roamRadius: 8
   roamInterval: 3
-  roamBlockedAreaName: RestrictedDoor
 --- !u!1 &460541836924351402
 GameObject:
   m_ObjectHideFlags: 0

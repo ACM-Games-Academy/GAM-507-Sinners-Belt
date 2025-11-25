@@ -31,10 +31,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public float roamRadius = 10f;
     public float roamInterval = 4f;
 
-    [Header("Roaming Restrictions")]
-    public string roamBlockedAreaName = "DoorBlock";
-    private int roamBlockedAreaMask;
-
     private float nextRoamTime = 0f;
     private bool isRoaming = true;
 
@@ -67,10 +63,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         if (health != null)
             health.OnDeath += HandleDeath;
-
-        // get the bitmask for the named area (1 << areaIndex)
-        int areaIndex = NavMesh.GetAreaFromName(roamBlockedAreaName);
-        roamBlockedAreaMask = 1 << areaIndex;
     }
 
     private void Update()
@@ -120,9 +112,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
             // hit.mask is already a bitmask for the area; compare directly
-            if (hit.mask == roamBlockedAreaMask)
-                return;
-
             MoveTo(hit.position);
         }
     }
@@ -142,8 +131,30 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             if (strafeRoutine == null)
                 strafeRoutine = StartCoroutine(StrafeRoutine());
 
-            if (dist < followStopDistance - 1f)
-                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+            // --- SAFE RETREAT LOGIC ---
+            Vector3 retreatDir = (transform.position - player.position).normalized;
+            Vector3 retreatTarget = transform.position + retreatDir * 1.5f;
+
+            // Check if retreat direction is actually safe
+            bool canRetreat = false;
+
+            if (NavMesh.SamplePosition(retreatTarget, out NavMeshHit retreatHit, 1.0f, NavMesh.AllAreas))
+            {
+                // Must be at least 1m away from walls
+                if (retreatHit.distance > 0.5f)
+                    canRetreat = true;
+            }
+
+            if (dist < followStopDistance - 1f && canRetreat)
+            {
+                MoveTo(retreatHit.position);
+            }
+            else if (!canRetreat)
+            {
+                // retreat is dangerous strafe instead
+                if (strafeRoutine == null)
+                    strafeRoutine = StartCoroutine(StrafeRoutine());
+            }
         }
 
         AvoidOtherEnemies();
@@ -217,7 +228,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         strafeRoutine = null;
 
         if (agent != null)
-            agent.areaMask = NavMesh.AllAreas & ~roamBlockedAreaMask;
+            agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnImpact(ImpactInfo data)
@@ -303,7 +314,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
         {
-            if (hit.collider.CompareTag("Enemy")) return false;
             return hit.collider.CompareTag("Player");
         }
 
