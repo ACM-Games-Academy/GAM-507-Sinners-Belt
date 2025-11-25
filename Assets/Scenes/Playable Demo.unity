@@ -13286,7 +13286,9 @@ MonoBehaviour:
   healthFill: {fileID: 5988449360421754561}
   healthText: {fileID: 540643047920538715}
   hideOnDeath: 1
-  extraFlashImages: []
+  extraFlashImages:
+  - {fileID: 345844262}
+  - {fileID: 132092306}
   HealthVignette: {fileID: 560701302}
   deathUI: {fileID: 1639290354}
   ammoUI: {fileID: 1590181026682735887}
