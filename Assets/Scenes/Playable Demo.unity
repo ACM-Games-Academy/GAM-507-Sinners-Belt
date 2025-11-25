@@ -1195,7 +1195,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorsToLock:
   - {fileID: 979538914}
-  - {fileID: 845009339}
   isEnabled: 0
   waves:
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
@@ -5798,7 +5797,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorsToLock:
-  - {fileID: 353765812}
   - {fileID: 979538914}
   isEnabled: 1
   waves:
@@ -6647,7 +6645,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorsToLock:
   - {fileID: 353765812}
-  - {fileID: 979538914}
   isEnabled: 0
   waves:
   - enemyPrefab: {fileID: 2031050304623730360, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
@@ -7055,7 +7052,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorsToLock:
-  - {fileID: 845009339}
   - {fileID: 107037904}
   isEnabled: 1
   waves:
@@ -8572,7 +8568,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorsToLock:
   - {fileID: 845009339}
-  - {fileID: 107037904}
   isEnabled: 0
   waves:
   - enemyPrefab: {fileID: 2031050304623730360, guid: a8f073a6be6ba7c4c9a05f9f618ec058, type: 3}
@@ -8821,8 +8816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec0b11b4c295fbe4fad744d59e252e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorsToLock:
-  - {fileID: 107037904}
+  doorsToLock: []
   isEnabled: 1
   waves:
   - enemyPrefab: {fileID: 2778526324392775552, guid: 5e4f48243011dfe44a75369bcbeda1ff, type: 3}
@@ -9506,7 +9500,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorsToLock:
-  - {fileID: 979538914}
   - {fileID: 845009339}
   isEnabled: 1
   waves:
