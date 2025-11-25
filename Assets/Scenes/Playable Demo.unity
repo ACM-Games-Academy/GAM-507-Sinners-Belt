@@ -9475,6 +9475,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89875cdc57c54474a8a74efd9b2a3b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1787117395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6475777219311533135, guid: 1704bf0b2668f8647b84314ca8096b71, type: 3}
+  m_PrefabInstance: {fileID: 291850531}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1804804497 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 329085108102557132, guid: f8eeeda3b29030643b32fd0061ffb7c4, type: 3}
@@ -13120,9 +13131,9 @@ MonoBehaviour:
   dashDistance: 8
   dashCooldown: 8
   dashAmount: 3
-  playerHealth: {fileID: 0}
-  shootScript: {fileID: 0}
-  playerCamera: {fileID: 0}
+  playerHealth: {fileID: 1681476832398583669}
+  shootScript: {fileID: 1917920877384902079}
+  playerCamera: {fileID: 1787117395}
 --- !u!114 &5413929102418652495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13276,8 +13287,8 @@ MonoBehaviour:
   healthText: {fileID: 540643047920538715}
   hideOnDeath: 1
   extraFlashImages: []
-  HealthVignette: {fileID: 0}
-  deathUI: {fileID: 0}
+  HealthVignette: {fileID: 560701302}
+  deathUI: {fileID: 1639290354}
   ammoUI: {fileID: 1590181026682735887}
 --- !u!23 &6263691915848948801
 MeshRenderer:
