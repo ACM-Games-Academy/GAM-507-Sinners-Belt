@@ -113,6 +113,18 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0b2be0bede609394dabc4986f9f4e32b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0b2be0bede609394dabc4986f9f4e32b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0b2be0bede609394dabc4986f9f4e32b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0b2be0bede609394dabc4986f9f4e32b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 44.09658
       objectReference: {fileID: 0}
@@ -1183,6 +1195,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   playerTag: Player
+  memoryDuration: 1
 --- !u!195 &7483398709057512385
 NavMeshAgent:
   m_ObjectHideFlags: 0
