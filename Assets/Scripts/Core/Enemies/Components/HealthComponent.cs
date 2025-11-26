@@ -8,6 +8,7 @@ public class HealthComponent : MonoBehaviour, IHealth
 {
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
+    [SerializeField] private float healthRegenRate;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -31,10 +32,7 @@ public class HealthComponent : MonoBehaviour, IHealth
         //     originalColor = mat.color;
         // }
 
-        if (CompareTag("Player"))
-        {
-            StartCoroutine(RegenerateHealth());
-        }
+        StartCoroutine(RegenerateHealth());
     }
 
     public void TakeDamage(float amount)
@@ -94,9 +92,9 @@ public class HealthComponent : MonoBehaviour, IHealth
     {
         while (IsAlive())
         {
-            if (currentHealth < maxHealth)
+            if (healthRegenRate > 0f && currentHealth < maxHealth)
             {
-                float newHealth = Math.Min(currentHealth + (15f * Time.deltaTime), maxHealth);
+                float newHealth = Math.Min(currentHealth + (healthRegenRate * Time.deltaTime), maxHealth);
                 currentHealth = newHealth;
                 OnHealthChanged?.Invoke(currentHealth, maxHealth);
             }
