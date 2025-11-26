@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{7208E510-6ECA-4FF4-A783-925973B32422}",
     "Language": "SFX",
-    "Hash": "{84AD91B1-4273-A7CF-49D0-8A5167429AC0}",
+    "Hash": "{823D9359-0896-FF20-0EBC-B140C8B71E2A}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main",
     "ShortName": "Main",
     "Path": "Main.bnk",
@@ -45,7 +45,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Gun SFX.wav",
-      "CachePath": "4D/{4DCA6177-01B3-1B89-DBC9-C5B09698C498}.wem"
+      "CachePath": "C3/{C37DC01E-ABF8-455B-1016-82769F1C4041}.wem"
      },
      {
       "Id": "353987337",
@@ -176,6 +176,6 @@
     ]
    }
   ],
-  "FileHash": "{3979729F-90D3-02D4-1593-9C58344103C0}"
+  "FileHash": "{58BA32CF-77B8-DAE7-7352-252DD6921AEA}"
  }
 }
