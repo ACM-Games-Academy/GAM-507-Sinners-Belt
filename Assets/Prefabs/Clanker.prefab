@@ -1154,6 +1154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 300
   currentHealth: 0
+  healthRegenRate: 0
 --- !u!114 &7291570241401384325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1259,7 +1260,6 @@ MonoBehaviour:
     m_Bits: 64
   roamRadius: 8
   roamInterval: 3
-  roamBlockedAreaName: RestrictedDoor
 --- !u!114 &7901789747132608705
 MonoBehaviour:
   m_ObjectHideFlags: 0
