@@ -63,9 +63,9 @@ public class SemiAutoFireMode : IFireMode
 
         Vector3 targetPoint = weapon.GetCameraTargetPoint();
         Vector3 muzzlePos = weapon.muzzlePoint.position;
-        Vector3 direction = (targetPoint - muzzlePos).normalized;
+        Vector3 direction = (targetPoint - weapon.cam.transform.position).normalized;
 
-        if (Physics.Raycast(muzzlePos, direction, out RaycastHit hit, Range, weapon.hitMask))
+        if (Physics.Raycast(weapon.cam.transform.position, weapon.cam.transform.forward, out RaycastHit hit, Range, ~weapon.negativeHitMask))
         {
             weapon.SpawnTracer(muzzlePos, hit.point);
 
