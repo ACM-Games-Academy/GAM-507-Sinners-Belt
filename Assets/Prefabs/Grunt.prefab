@@ -796,6 +796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100000
   currentHealth: 100000
+  healthRegenRate: 0
 --- !u!114 &5904679105238655504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,12 +811,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 0.5
   range: 15
-  bulletSpeed: 40
   shotsBeforeReload: 10
   reloadDuration: 2.5
-  projectilePrefab: {fileID: 178643061197957055, guid: d6e3a149c79d7044396baa6673493eb1, type: 3}
+  damage: 10
   firePoint: {fileID: 7719859019934002046}
-  meleeDamage: 10
+  bulletTrailPrefab: {fileID: 0}
+  trailSpeed: 200
 --- !u!114 &5461739821193174089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,6 +838,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   playerTag: Player
+  memoryDuration: 1
 --- !u!114 &6191530764843925410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -865,7 +867,19 @@ MonoBehaviour:
   attack: {fileID: 5904679105238655504}
   vision: {fileID: 5461739821193174089}
   health: {fileID: 4051813278821499118}
+  agent: {fileID: 0}
+  animator: {fileID: 0}
   followStopDistance: 1
+  losRecheckInterval: 0.5
+  strafeDistance: 2.5
+  strafeSpeed: 2
+  strafeSwitchTime: 2
+  avoidRadius: 2
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  roamRadius: 10
+  roamInterval: 4
 --- !u!114 &1970229309663450233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -878,21 +892,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53cf166e88e03f048a163b903d150dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minAttackDistance: 5
-  maxAttackDistance: 15
-  searchDuration: 5
-  searchRadius: 4
-  roamRadius: 10
-  coverSearchRadius: 8
-  coverMask:
-    serializedVersion: 2
-    m_Bits: 1
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 1
-  peekInterval: 0.5
-  peekDuration: 2
-  peekOffset: 8
 --- !u!195 &3067953635958582188
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -956,6 +955,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthUI
   targetHealth: {fileID: 4051813278821499118}
   healthSlider: {fileID: 6797029308260951309}
+  healthFill: {fileID: 0}
   healthText: {fileID: 2701184464001535960}
   hideOnDeath: 1
+  extraFlashImages: []
+  HealthVignette: {fileID: 0}
+  deathUI: {fileID: 0}
   ammoUI: {fileID: 0}

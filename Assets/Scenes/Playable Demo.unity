@@ -12317,6 +12317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 300
   currentHealth: 0
+  healthRegenRate: 1
 --- !u!114 &17788463358984197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12651,6 +12652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 300
   currentHealth: 0
+  healthRegenRate: 22.5
 --- !u!114 &1917920877384902079
 MonoBehaviour:
   m_ObjectHideFlags: 0

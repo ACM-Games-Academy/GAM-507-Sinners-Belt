@@ -560,6 +560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 300
   currentHealth: 300
+  healthRegenRate: 0
 --- !u!114 &4952280355838396363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +602,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   playerTag: Player
+  memoryDuration: 1
 --- !u!195 &2398372770095020654
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -664,7 +666,6 @@ MonoBehaviour:
     m_Bits: 64
   roamRadius: 8
   roamInterval: 3
-  roamBlockedAreaName: RestrictedDoor
 --- !u!114 &2348928197658279761
 MonoBehaviour:
   m_ObjectHideFlags: 0
