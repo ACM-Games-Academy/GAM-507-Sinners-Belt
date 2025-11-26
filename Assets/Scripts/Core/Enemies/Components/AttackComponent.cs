@@ -26,12 +26,15 @@ public class AttackComponent : MonoBehaviour, IAttacker
 
     private Animator animator;
 
+    private MovementComponent movement;
+
     public bool CanAttack => !isReloading && Time.time >= lastAttackTime + cooldown;
     public bool IsReloading => isReloading;
 
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+        movement = GetComponent<MovementComponent>();
     }
 
     public void TryAttack(Transform target)
@@ -146,10 +149,24 @@ public class AttackComponent : MonoBehaviour, IAttacker
         isReloading = true;
         OnReloadStart?.Invoke();
 
+        // Stop movement
+        if (movement != null)
+            movement.StopMovement();
+
+        // Play reload animation
+        if (animator != null)
+            animator.SetBool("IsReloading", true);
+
         yield return new WaitForSeconds(reloadDuration);
 
         shotsFired = 0;
         isReloading = false;
+
+        // End reload animation
+        if (animator != null)
+            animator.SetBool("IsReloading", false);
+
         OnReloadEnd?.Invoke();
     }
+
 }

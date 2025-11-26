@@ -31,10 +31,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     public float roamRadius = 10f;
     public float roamInterval = 4f;
 
-    [Header("Roaming Restrictions")]
-    public string roamBlockedAreaName = "DoorBlock";
-    private int roamBlockedAreaMask;
-
     private float nextRoamTime = 0f;
     private bool isRoaming = true;
 
@@ -57,7 +53,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         vision ??= GetComponent<VisionComponent>();
         agent ??= GetComponent<NavMeshAgent>();
 
-        // NEW
         if (animator == null) animator = GetComponentInChildren<Animator>();
 
         if (vision != null)
@@ -68,8 +63,6 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         if (health != null)
             health.OnDeath += HandleDeath;
-
-        roamBlockedAreaMask = 1 << NavMesh.GetAreaFromName(roamBlockedAreaName);
     }
 
     private void Update()
@@ -77,18 +70,30 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         if (!health.IsAlive()) return;
 
         bool isMoving = agent != null && agent.velocity.sqrMagnitude > 0.2f;
-        animator?.SetBool("IsMoving", isMoving);  
+        animator?.SetBool("IsMoving", isMoving);
 
-        if (player == null || !playerVisible)
+        if (player == null && !playerVisible)
         {
             if (!isRoaming)
                 isRoaming = true;
 
-            HandleRoaming(); 
+            HandleRoaming();
             return;
         }
 
+        // Combat: determine target to face
+        Vector3 faceTarget = playerVisible && player != null
+            ? player.position
+            : lastKnownPlayerPos;
+
+        if (!isRoaming)
+            FaceTarget(faceTarget);
+
         HandleCombatMovement();
+
+        // Update last known position while player is visible
+        if (playerVisible && player != null)
+            lastKnownPlayerPos = player.position;
     }
 
     private void HandleRoaming()
@@ -103,11 +108,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         Vector3 roamPos = transform.position + randomOffset;
 
+        // Sample with all areas, then check the hit.mask against the blocked mask
         if (NavMesh.SamplePosition(roamPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
-            if ((1 << hit.mask) == roamBlockedAreaMask)
-                return;
-
+            // hit.mask is already a bitmask for the area; compare directly
             MoveTo(hit.position);
         }
     }
@@ -127,8 +131,30 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             if (strafeRoutine == null)
                 strafeRoutine = StartCoroutine(StrafeRoutine());
 
-            if (dist < followStopDistance - 1f)
-                MoveTo(transform.position - (player.position - transform.position).normalized * 1.5f);
+            // --- SAFE RETREAT LOGIC ---
+            Vector3 retreatDir = (transform.position - player.position).normalized;
+            Vector3 retreatTarget = transform.position + retreatDir * 1.5f;
+
+            // Check if retreat direction is actually safe
+            bool canRetreat = false;
+
+            if (NavMesh.SamplePosition(retreatTarget, out NavMeshHit retreatHit, 1.0f, NavMesh.AllAreas))
+            {
+                // Must be at least 1m away from walls
+                if (retreatHit.distance > 0.5f)
+                    canRetreat = true;
+            }
+
+            if (dist < followStopDistance - 1f && canRetreat)
+            {
+                MoveTo(retreatHit.position);
+            }
+            else if (!canRetreat)
+            {
+                // retreat is dangerous strafe instead
+                if (strafeRoutine == null)
+                    strafeRoutine = StartCoroutine(StrafeRoutine());
+            }
         }
 
         AvoidOtherEnemies();
@@ -165,6 +191,17 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         }
     }
 
+    private void FaceTarget(Vector3 targetPos)
+    {
+        Vector3 lookDir = targetPos - transform.position;
+        lookDir.y = 0f;
+
+        if (lookDir.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 5f);
+            transform.rotation = targetRot;
+        }
+    }
 
     public void OnPlayerDetected(Transform playerTransform)
     {
@@ -173,10 +210,11 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
         playerVisible = true;
         lastKnownPlayerPos = player.position;
 
+        if (agent != null)
+            agent.areaMask = NavMesh.AllAreas;
+
         if (strafeRoutine == null)
             strafeRoutine = StartCoroutine(StrafeRoutine());
-
-        agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnPlayerLost()
@@ -189,12 +227,13 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
         strafeRoutine = null;
 
-        agent.areaMask = ~roamBlockedAreaMask;
+        if (agent != null)
+            agent.areaMask = NavMesh.AllAreas;
     }
 
     public void OnImpact(ImpactInfo data)
     {
-        animator?.SetTrigger("Hit");  
+        animator?.SetTrigger("Hit");
         health?.TakeDamage(data.Damage);
     }
 
@@ -234,7 +273,7 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
             yield return new WaitForSeconds(strafeSpeed);
         }
 
-        animator?.SetBool("Strafe", false); 
+        animator?.SetBool("Strafe", false);
         strafeRoutine = null;
     }
 
@@ -257,7 +296,11 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
                 MoveTo(transform.position + sideStep);
             }
 
-            transform.position += offset * Time.deltaTime;
+            // move the agent using agent.Move instead of directly changing transform.position
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.Move(offset * Time.deltaTime);
+            }
         }
     }
 
@@ -265,12 +308,12 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
     {
         if (player == null) return false;
 
-        Vector3 origin = transform.position + Vector3.up * 1.5f;
+        // offset the ray origin slightly forward so it doesn't start inside nearby geometry
+        Vector3 origin = transform.position + Vector3.up * 1.5f + transform.forward * 0.2f;
         Vector3 dir = (player.position + Vector3.up * 1f) - origin;
 
         if (Physics.Raycast(origin, dir.normalized, out RaycastHit hit, vision.viewRadius))
         {
-            if (hit.collider.CompareTag("Enemy")) return false;
             return hit.collider.CompareTag("Player");
         }
 
@@ -284,10 +327,10 @@ public class EnemyController : MonoBehaviour, IAggro, IImpactable
 
     private void HandleDeath()
     {
-        animator?.SetTrigger("Die");  
+        animator?.SetTrigger("Die");
 
         movement?.StopMovement();
-        agent.isStopped = true;
+        if (agent != null) agent.isStopped = true;
 
         Destroy(gameObject, 3f); // More time for animations
         enabled = false;

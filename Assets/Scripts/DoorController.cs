@@ -41,6 +41,8 @@ public class DoorController : MonoBehaviour
     {
         leftDoorAnimator.enabled = false;
         rightDoorAnimator.enabled = false;
+        leftDoorAnimator.SetTrigger(closeTriggerName);
+        rightDoorAnimator.SetTrigger(closeTriggerName);
     }
 
     public void ThawAnimators()
