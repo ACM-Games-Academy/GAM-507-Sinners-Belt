@@ -25,9 +25,11 @@ public class HealthUI : MonoBehaviour
     private Color[] originalExtraColors;
     private Coroutine flashRoutine;
 
-    private void Start()
-    {   
+    private float previousHealth;
 
+    private void Start()
+    {
+        previousHealth = targetHealth.MaxHealth;
         originalFillColor = healthFill.color;
 
         // Store original colours images
@@ -100,7 +102,7 @@ public class HealthUI : MonoBehaviour
         healthSlider.maxValue = maxHealth;
         healthSlider.value = currentHealth;
 
-        healthText.text = $"{currentHealth} / {maxHealth}";
+        healthText.text = $"{Mathf.Floor(currentHealth)} / {maxHealth}";
 
         // Update vignette
         if (HealthVignette != null)
@@ -110,10 +112,15 @@ public class HealthUI : MonoBehaviour
         }
 
         // FLASH UI ELEMENTS
-        if (flashRoutine != null)
-            StopCoroutine(flashRoutine);
+        if (previousHealth > currentHealth)
+        {
+            if (flashRoutine != null)
+                StopCoroutine(flashRoutine);
 
-        flashRoutine = StartCoroutine(FlashDamageUI());
+            flashRoutine = StartCoroutine(FlashDamageUI());
+        }
+
+        previousHealth = currentHealth;
     }
 
     private IEnumerator FlashDamageUI()
@@ -145,7 +152,9 @@ public class HealthUI : MonoBehaviour
         {
             healthSlider.gameObject.SetActive(false);
             healthText.gameObject.SetActive(false);
-            deathUI.SetActive(true);
+
+            if (deathUI !=  null)
+                deathUI.SetActive(true);
 
             //ammo UI hide
             if (ammoUI != null)
@@ -156,7 +165,6 @@ public class HealthUI : MonoBehaviour
             //Enable Mouse
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-
         }
     }
 

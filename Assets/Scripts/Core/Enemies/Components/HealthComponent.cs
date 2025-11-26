@@ -7,7 +7,7 @@ using System.Collections;
 public class HealthComponent : MonoBehaviour, IHealth
 {
     [SerializeField] private float maxHealth = 100f;
-    public float currentHealth;
+    [SerializeField] private float currentHealth;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -30,6 +30,11 @@ public class HealthComponent : MonoBehaviour, IHealth
         //     mat = rend.material; // this creates a unique material for this renderer
         //     originalColor = mat.color;
         // }
+
+        if (CompareTag("Player"))
+        {
+            StartCoroutine(RegenerateHealth());
+        }
     }
 
     public void TakeDamage(float amount)
@@ -85,8 +90,18 @@ public class HealthComponent : MonoBehaviour, IHealth
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
-   
-    
-    
+    private IEnumerator RegenerateHealth()
+    {
+        while (IsAlive())
+        {
+            if (currentHealth < maxHealth)
+            {
+                float newHealth = Math.Min(currentHealth + (15f * Time.deltaTime), maxHealth);
+                currentHealth = newHealth;
+                OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            }
 
+            yield return null;
+        }
+    }
 }

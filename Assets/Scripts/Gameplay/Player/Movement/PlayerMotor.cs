@@ -90,6 +90,10 @@ public class PlayerMotor : MonoBehaviour
         {
             playerHealth.OnDeath += OnDeath;
         }
+
+        //Lock Cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void HandlePlayerRotation()

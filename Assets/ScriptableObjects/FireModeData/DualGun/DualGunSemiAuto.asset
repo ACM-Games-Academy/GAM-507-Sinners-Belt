@@ -16,5 +16,8 @@ MonoBehaviour:
   damage: 20
   range: 1000
   ammoConsumption: 1
+  kickPower: 0.01
+  maxAmmo: 40
+  reloadTime: 1
   fireSound: {fileID: 0}
   muzzleFlashPrefab: {fileID: 0}
