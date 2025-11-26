@@ -11636,7 +11636,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2056865292
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11760,7 +11760,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Crouch
+  m_text: 'Sprint
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ffa5a65cc5c103c4c9ae5c2478511594, type: 2}
   m_sharedMaterial: {fileID: 6519038784020976483, guid: ffa5a65cc5c103c4c9ae5c2478511594, type: 2}
@@ -12671,6 +12673,7 @@ MonoBehaviour:
     m_Bits: 128
   bulletTrailPrefab: {fileID: 8052629309728904650, guid: 86daa5f4862b1a74e946bbfb957b931d, type: 3}
   cam: {fileID: 15525933}
+  input: {fileID: 3384603822894845553}
   semiAutoData: {fileID: 11400000, guid: ecedab5fa06ba5044a5fb41fd747398e, type: 2}
   crosshairUIShooting: {fileID: 151185444}
   crosshairnotShootingUI: {fileID: 7428988884065343291}
@@ -14305,7 +14308,19 @@ MonoBehaviour:
     m_ActionId: 871a96c1-9cb1-46c3-adde-8c9b79806b11
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3384603822894845553}
+        m_TargetAssemblyTypeName: InputReader, Assembly-CSharp
+        m_MethodName: OnFire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 65081e4d-a7c3-491d-8a06-178dbc7efd48
     m_ActionName: 'Player/Fire[/Mouse/leftButton]'
   - m_PersistentCalls:
@@ -14412,6 +14427,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2fb60ba4-7aaa-4d84-9bef-1a8c6a44a760
     m_ActionName: Player/Crouch
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3384603822894845553}
+        m_TargetAssemblyTypeName: InputReader, Assembly-CSharp
+        m_MethodName: OnReload
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e8ddf6f0-a3e6-47bb-be6d-01aa25d41167
+    m_ActionName: 'Player/Reload[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -14537,7 +14568,7 @@ MonoBehaviour:
   jumpCooldown: 1
   gravity: -9.8
   coyoteTime: 0.15
-  dashDistance: 8
+  dashDistance: 5
   dashCooldown: 8
   dashAmount: 3
   playerHealth: {fileID: 1681476832398583669}
