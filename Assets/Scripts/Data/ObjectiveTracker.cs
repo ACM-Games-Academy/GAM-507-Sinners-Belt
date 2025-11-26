@@ -8,7 +8,6 @@ public class ObjectiveTracker : MonoBehaviour
     private void Awake()
     {
         objectiveFlags = new Dictionary<string, bool>();
-        SetFlag("MissionObjectiveCollected", true);
     }
 
     public void SetFlag(string flag, bool value)
