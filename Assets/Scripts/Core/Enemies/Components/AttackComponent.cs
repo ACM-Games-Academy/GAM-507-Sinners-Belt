@@ -6,18 +6,16 @@ using System.Collections;
 public class AttackComponent : MonoBehaviour, IAttacker
 {
     [Header("Attack")]
-    public float cooldown = 1.2f;
-    public float range = 15f;
-    public float bulletSpeed = 40f;
-    public int shotsBeforeReload = 3;
+    public float cooldown = 0.25f;    // hitscan can fire faster
+    public float range = 50f;
+    public int shotsBeforeReload = 5;
     public float reloadDuration = 2.5f;
+    public float damage = 10f;
 
-    [Header("Ranged Attack")]
-    public GameObject projectilePrefab;
+    [Header("Hitscan")]
     public Transform firePoint;
-
-    [Header("Melee Fallback")]
-    public float meleeDamage = 10f;
+    public TrailRenderer bulletTrailPrefab;
+    public float trailSpeed = 200f;
 
     private float lastAttackTime = -999f;
     private int shotsFired = 0;
@@ -26,74 +24,149 @@ public class AttackComponent : MonoBehaviour, IAttacker
     public event Action OnReloadStart;
     public event Action OnReloadEnd;
 
+    private Animator animator;
+
+    private MovementComponent movement;
+
     public bool CanAttack => !isReloading && Time.time >= lastAttackTime + cooldown;
     public bool IsReloading => isReloading;
 
+    private void Awake()
+    {
+        animator = GetComponentInChildren<Animator>();
+        movement = GetComponent<MovementComponent>();
+    }
+
     public void TryAttack(Transform target)
     {
-        if (!CanAttack || target == null) return;
+        if (!CanAttack || target == null)
+            return;
 
         float dist = Vector3.Distance(transform.position, target.position);
-        if (dist > range) return;
+        if (dist > range)
+            return;
 
         // LOS check
-        if (Physics.Raycast(transform.position + Vector3.up * 1.0f,
-                            (target.position - transform.position).normalized,
-                            out RaycastHit hit, range))
+        if (Physics.Raycast(transform.position + Vector3.up * 1f,
+            (target.position - transform.position).normalized,
+            out RaycastHit hitCheck, range))
         {
-            if (!hit.collider.CompareTag("Player")) return;
+            if (!hitCheck.collider.CompareTag("Player"))
+                return;
         }
 
         // Aim
         if (firePoint != null)
-            firePoint.LookAt(target.position + Vector3.up * 0.6f);
+            firePoint.LookAt(target.position + Vector3.up * 0.5f);
 
-        // Fire
-        if (projectilePrefab != null && firePoint != null)
-            ShootProjectile(firePoint);
-        else
-            TryMelee(target);
+        // HITSCAN FIRE
+        HitscanFire(target);
+
+        // fire animation
+        if (animator != null)
+        {
+            animator.SetBool("IsShooting", true);
+            StartCoroutine(ResetShootFlag());
+        }
 
         lastAttackTime = Time.time;
         shotsFired++;
 
         if (shotsFired >= shotsBeforeReload)
-        {
             StartCoroutine(ReloadRoutine());
-        }
     }
 
-    private void TryMelee(Transform target)
+    // ----------------------------
+    // HITSCAN FIRE
+    // ----------------------------
+    private void HitscanFire(Transform target)
     {
-        var health = target.GetComponent<HealthComponent>();
-        if (health != null)
-            health.TakeDamage(meleeDamage);
+        Vector3 direction = firePoint.forward;
+
+        if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, range))
+        {
+            // Apply damage if target has health
+            HealthComponent hp = hit.collider.GetComponent<HealthComponent>();
+            if (hp != null)
+                hp.TakeDamage(damage);
+
+            // Bullet trail to hit point
+            if (bulletTrailPrefab != null)
+            {
+                TrailRenderer trail = Instantiate(bulletTrailPrefab, firePoint.position, Quaternion.identity);
+                StartCoroutine(PlayTrail(trail, hit.point));
+            }
+        }
+        else
+        {
+            // Missed — send trail to max range
+            Vector3 endPoint = firePoint.position + direction * range;
+
+            if (bulletTrailPrefab != null)
+            {
+                TrailRenderer trail = Instantiate(bulletTrailPrefab, firePoint.position, Quaternion.identity);
+                StartCoroutine(PlayTrail(trail, endPoint));
+            }
+        }
     }
 
-    private void ShootProjectile(Transform origin)
+    // ----------------------------
+    // BULLET TRAIL MOVEMENT
+    // ----------------------------
+    private IEnumerator PlayTrail(TrailRenderer trail, Vector3 targetPoint)
     {
-        GameObject bulletObj = Instantiate(projectilePrefab, origin.position, origin.rotation);
-        if (bulletObj.TryGetComponent<Rigidbody>(out var rb))
+        Vector3 start = trail.transform.position;
+        float dist = Vector3.Distance(start, targetPoint);
+        float remaining = dist;
+
+        while (remaining > 0f)
         {
-            rb.isKinematic = false;
-            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            rb.linearVelocity = origin.forward * bulletSpeed;
+            float step = trailSpeed * Time.deltaTime;
+            trail.transform.position = Vector3.MoveTowards(trail.transform.position, targetPoint, step);
+            remaining -= step;
+            yield return null;
         }
-        else if (bulletObj.TryGetComponent<Bullet>(out var bullet))
-        {
-            bullet.Initialize(origin.forward * bulletSpeed);
-        }
+
+        trail.transform.position = targetPoint;
+        Destroy(trail.gameObject, trail.time);
     }
 
+    // ----------------------------
+    // RESET SHOOT ANIM
+    // ----------------------------
+    private IEnumerator ResetShootFlag()
+    {
+        yield return null;
+        if (animator != null)
+            animator.SetBool("IsShooting", false);
+    }
+
+    // ----------------------------
+    // RELOAD
+    // ----------------------------
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
         OnReloadStart?.Invoke();
 
+        // Stop movement
+        if (movement != null)
+            movement.StopMovement();
+
+        // Play reload animation
+        if (animator != null)
+            animator.SetBool("IsReloading", true);
+
         yield return new WaitForSeconds(reloadDuration);
 
         shotsFired = 0;
         isReloading = false;
+
+        // End reload animation
+        if (animator != null)
+            animator.SetBool("IsReloading", false);
+
         OnReloadEnd?.Invoke();
     }
+
 }

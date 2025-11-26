@@ -25,6 +25,8 @@ public class DualFireGunController : WeaponBase
 
     private void Update()
     {
+        bool reloadSignal = false;
+
         // FIRE HELD
         if (Input.GetButton("Fire1"))
         {
@@ -33,6 +35,9 @@ public class DualFireGunController : WeaponBase
             FireResponse fireResponse = Fire();
             if (animator != null)
             {
+                if (fireResponse == FireResponse.NoAmmo)
+                    reloadSignal = true;
+
                 if (fireResponse != FireResponse.NoAmmo && fireResponse != FireResponse.NoFireMode && fireResponse != FireResponse.Reloading)
                 {
                     animator.SetBool("IsFiring", true);
@@ -64,7 +69,7 @@ public class DualFireGunController : WeaponBase
         }
 
         // RELOAD
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) || reloadSignal)
         {
             bool didReload = TryReload();
 

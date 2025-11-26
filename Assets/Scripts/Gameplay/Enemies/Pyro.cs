@@ -24,6 +24,5 @@ public class Pyro : MonoBehaviour
         var atk = GetComponent<AttackComponent>();
         atk.cooldown = meleeCooldown;
         atk.range = meleeRange;
-        atk.meleeDamage = meleeDamage;
     }
 }

@@ -8,6 +8,8 @@ public class PlayerMotor : MonoBehaviour
     public InputReader input;   
 
      public GroundCheck groundCheck;
+
+     
     
 
     [Header("Movement Settings")]
@@ -54,6 +56,13 @@ public class PlayerMotor : MonoBehaviour
 
     private Animator animator;
 
+    [Header("Death Settings")]
+    [SerializeField] private HealthComponent playerHealth;
+    [SerializeField] private MonoBehaviour shootScript; 
+
+    [SerializeField] private CinemachineCamera playerCamera;
+
+
    
     private void Awake()
     {
@@ -68,12 +77,23 @@ public class PlayerMotor : MonoBehaviour
         HandleJumpCharge();
         HandleDash();
         HandleCrouch();
+
+
     }
 
     private void Start()
     {
         dashRechargeTimers = new float[(int)dashAmount];
         availableDashes = (int)dashAmount;
+
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath += OnDeath;
+        }
+
+        //Lock Cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void HandlePlayerRotation()
@@ -257,5 +277,32 @@ public class PlayerMotor : MonoBehaviour
         float targetHeight = input.IsCrouching ? 1f : 2f;
         controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * 10f);
     }
+
+  
+    public void DisableMotor()
+    {
+        this.enabled = false;
+    }
+
+    private void OnDeath()
+    {
+        DisableMotor();
+
+        if (shootScript != null)
+        {
+            shootScript.enabled = false;
+        }
+
+        if (playerCamera != null)
+        {
+            playerCamera.enabled = false;
+        }
+
+
+    }
+
+
+
+
 
 }
