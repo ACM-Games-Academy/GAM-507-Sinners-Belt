@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DualFireGunController : WeaponBase
 {
+
+    public InputReader input;
+
     public SemiAutoFireModeData semiAutoData;
     private SemiAutoFireMode semiAuto;
 
@@ -28,7 +31,7 @@ public class DualFireGunController : WeaponBase
         bool reloadSignal = false;
 
         // FIRE HELD
-        if (Input.GetButton("Fire1"))
+        if (input.FireHeld)
         {
             Initialize(semiAuto);
 
@@ -69,11 +72,9 @@ public class DualFireGunController : WeaponBase
         }
 
         // RELOAD
-        if (Input.GetKeyDown(KeyCode.R) || reloadSignal)
+        if ((input.ReloadPressed || reloadSignal) && TryReload())
         {
-            bool didReload = TryReload();
-
-            if (animator != null && didReload)
+            if (animator != null)
                 animator.SetTrigger("Reload");
         }
     }

@@ -14,12 +14,18 @@ public class InputReader : MonoBehaviour
     public bool JumpPressed { get; private set; }
     public bool DashPressed { get; private set; }
 
+    public bool FireHeld { get; private set; }
+    public bool FirePressed { get; private set; }
+
+    public bool ReloadPressed { get; private set; }
+
+
     private void LateUpdate()
     {
         //Reset single frame inputs
         JumpPressed = false;
         DashPressed = false;
-
+        ReloadPressed = false;
     }
 
 
@@ -75,6 +81,27 @@ public class InputReader : MonoBehaviour
         if (context.performed)
         {
             DashPressed = true; //trigger dash
+        }
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            FireHeld = true;
+            FirePressed = true;
+        }
+        else if (context.canceled)
+        {
+            FireHeld = false;
+        }
+    }
+
+    public void OnReload(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            ReloadPressed = true;
         }
     }
 }
