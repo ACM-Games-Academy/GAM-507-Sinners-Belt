@@ -10,19 +10,11 @@
     "Type": "User",
     "GUID": "{9AA74B09-7027-40FD-823D-557A4646ACEA}",
     "Language": "SFX",
-    "Hash": "{3422FE6A-BD52-735E-659B-EB352F031A99}",
+    "Hash": "{4F605FD8-ACF6-A341-4BC7-FD506CB989BE}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Menu",
     "ShortName": "Menu",
     "Path": "Menu.bnk",
     "Media": [
-     {
-      "Id": "34267215",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "The Credits.wav",
-      "CachePath": "75/{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem"
-     },
      {
       "Id": "551062134",
       "Language": "SFX",
@@ -50,19 +42,6 @@
         "MediaRefs": [
          {
           "Id": "551062134"
-         }
-        ]
-       },
-       {
-        "SwitchValue": {
-         "GroupType": "State",
-         "GroupId": "4055567060",
-         "Id": "89505537",
-         "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
-        },
-        "MediaRefs": [
-         {
-          "Id": "34267215"
          }
         ]
        }
@@ -108,6 +87,6 @@
     ]
    }
   ],
-  "FileHash": "{6724BD04-1051-1376-C6A6-D6482F1D0E88}"
+  "FileHash": "{D33230A9-7573-9A18-E305-D06EFF6D069E}"
  }
 }

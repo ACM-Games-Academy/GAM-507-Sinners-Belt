@@ -10,6 +10,5 @@ State	ID	Name	State Group			Notes
 	2607556080	Menu	Menu_Music			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	34267215	The Credits	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\75\{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem		\Interactive Music Hierarchy\Default Work Unit\Music\Gameplay\The Credits\The Credits		7198952
 	551062134	Dessert_Menu	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\76\{76AE245E-E1B1-1483-EB09-09683CA36DED}.wem		\Interactive Music Hierarchy\Default Work Unit\Music\Menu\Dessert_Menu\Dessert_Menu		25225312
 

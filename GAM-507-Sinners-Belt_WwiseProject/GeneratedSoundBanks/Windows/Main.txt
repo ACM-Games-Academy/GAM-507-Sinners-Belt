@@ -23,7 +23,6 @@ Effect plug-ins	ID	Name	Type				Notes
 	1674078407	Chorus_Like	Wwise Flanger			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	34267215	The Credits	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\75\{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem		\Interactive Music Hierarchy\Default Work Unit\Music\Gameplay\The Credits\The Credits		7198952
 	43063051	Shoe Step Metal Hard A	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\F3\{F3BCEE7B-44D7-7B5F-E2E9-D84D58B736CC}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard A		110668
 	55383908	Shoe Step Metal Hard B	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\94\{940AE926-E905-6279-D3B4-7685AD4948C4}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard B		123672
 	62493604	Ambience	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\DD\{DD0AA30D-382E-0372-7A02-BDBACC46998B}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Ambience		6480992
