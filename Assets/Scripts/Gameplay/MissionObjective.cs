@@ -5,6 +5,7 @@ public class MissionObjective : MonoBehaviour
     [SerializeField] private WaveTrigger[] triggersToEnable;
 
     private bool isEnabled = true;
+    public AK.Wwise.Event ObjectiveCollectedSound;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,6 +21,7 @@ public class MissionObjective : MonoBehaviour
 
             // Update mission objective in tracker dictionary
             objectiveTracker.SetFlag("MissionObjectiveCollected", true);
+            ObjectiveCollectedSound.Post(gameObject);
 
             // Disable this object
             gameObject.SetActive(false);

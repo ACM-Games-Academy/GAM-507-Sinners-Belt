@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b08fb17d1e23b3b40b61b0afbada9c02, type: 3}
+  m_Name: 79E3D73B-91B3-4F29-AF7D-ADA0E2D9C8B2
+  m_EditorClassIdentifier: 
+  objectName: Play_Reload
+  id: 1910506537
+  guid: 79E3D73B-91B3-4F29-AF7D-ADA0E2D9C8B2
+  IsInUserDefinedSoundBank: 1

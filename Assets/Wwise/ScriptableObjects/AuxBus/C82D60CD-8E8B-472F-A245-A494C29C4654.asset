@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a3ede6f47702b48b3ae0e6e8856a81, type: 3}
+  m_Name: C82D60CD-8E8B-472F-A245-A494C29C4654
+  m_EditorClassIdentifier: 
+  objectName: RoomReverb
+  id: 1340358820
+  guid: C82D60CD-8E8B-472F-A245-A494C29C4654

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" SchemaVersion="123">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{09C80F75-0CE4-4AD4-BAAF-37620C9CDA22}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_Gun" ID="{ACE59757-BB17-426A-A5F9-3CA9A5C06698}">
+					<ChildrenList>
+						<Action Name="" ID="{3EA735B1-5164-4D6F-8E2F-998A2E7EC17B}" ShortID="247006064">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Gun SFX" ID="{C3607E57-065D-4780-8FE2-3C1F39450179}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Footsteps" ID="{AAF35C3B-3EB8-4D48-931C-FC7C7C8FFF52}">
+					<ChildrenList>
+						<Action Name="" ID="{1526DF7A-611E-4B77-B27E-127C60B6BA2E}" ShortID="270703264">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Footsteps" ID="{A5EAD68B-D25D-41EE-A433-F29FCC74D847}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Reload" ID="{79E3D73B-91B3-4F29-AF7D-ADA0E2D9C8B2}">
+					<ChildrenList>
+						<Action Name="" ID="{C4804DBF-6ABF-403A-978D-1773410B2959}" ShortID="519880172">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Reload" ID="{C570DD75-0840-43BB-9992-40472F7E5C84}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Door_Open" ID="{08ED9E33-01AB-481D-8BE2-6BAC54DFB252}">
+					<ChildrenList>
+						<Action Name="" ID="{5FF0607B-2330-41F6-9DF0-8A61C28FEF12}" ShortID="20328751">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Door Open" ID="{0004C6A0-0A8A-4858-AB46-719DA7633757}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Door_Close" ID="{99680F6E-0CA0-481A-B1B2-FFCF66A4F098}">
+					<ChildrenList>
+						<Action Name="" ID="{AB0BDEF3-4A67-4BC1-A40F-D3E42859CEEA}" ShortID="487871918">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Door Close" ID="{1FAC4356-1487-4F39-816D-0BF667B5262E}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Enemy_Footsteps" ID="{9B7F8764-C7EE-4798-8F6E-34DB5ECF044F}">
+					<ChildrenList>
+						<Action Name="" ID="{383957ED-80E6-4236-85A7-2BBE33AC9D4F}" ShortID="592334045">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Enemy Footsteps" ID="{2C8B5F30-0D0E-4F95-BA8D-4418282735A8}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Enemy_Death" ID="{4D9736BD-0C3A-43BC-9157-450B1FF1FB6D}">
+					<ChildrenList>
+						<Action Name="" ID="{101C23FA-FA91-4AB0-8378-F526482E0F0C}" ShortID="543824662">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Enemy Death" ID="{C575F989-6625-4808-BAAE-3296329837CF}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Enemy_Gun" ID="{1E389CBC-3A55-4994-BBB1-898A7672EC17}">
+					<ChildrenList>
+						<Action Name="" ID="{317CFE9C-3220-4E50-8C8A-4D48DAED44CD}" ShortID="55643176">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Enemy Gun" ID="{ADB41E4E-40D0-4D75-A108-CDC863D23E32}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Ambience" ID="{EEAA1330-1A24-445D-B25D-922C08A00D43}">
+					<ChildrenList>
+						<Action Name="" ID="{355F0961-1D2F-40A3-9AE1-E26DE82414C7}" ShortID="68969777">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Ambience" ID="{7905C0DB-BA5C-48BB-A3DA-310D671ADD6B}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_ObjectiveCollected" ID="{E6C04AB4-F631-43EF-9910-74158C2B2020}">
+					<ChildrenList>
+						<Action Name="" ID="{54A478C2-4B32-4D57-A54F-9D4DD7E98C5F}" ShortID="273959813">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ObjectiveCollected" ID="{924F2AF4-A12F-4946-AC0F-EBC14530D90D}" WorkUnitID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_MenuMusic" ID="{5DC69D17-4F4C-4CFA-89D9-1A3FA6E24274}">
+					<ChildrenList>
+						<Action Name="" ID="{0BED5C73-3E78-4145-9DDE-6D9C21C4368D}" ShortID="988033631">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="22"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Menu" ID="{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}" WorkUnitID="{7634D9F9-4169-42CC-9ADF-890FEF6363E4}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{8B91E187-0301-4CDF-9A17-D8F6978C8A8E}" ShortID="337407002">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Music" ID="{D72B7F10-2E51-4F1E-ADCF-6A5DA70E750D}" WorkUnitID="{C65BA963-33D1-4FDF-8A87-503A9FBF1A48}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_GameplayMusic" ID="{0DEFDB53-96B8-45F6-92C6-1B4EAB0D9D0D}">
+					<ChildrenList>
+						<Action Name="" ID="{77F57E9B-868C-4695-8CF0-AA7A5D34FE70}" ShortID="319680236">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="22"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Gameplay" ID="{16DFC28A-2DE0-40B9-9DDD-891779EC695C}" WorkUnitID="{7634D9F9-4169-42CC-9ADF-890FEF6363E4}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{32CD98F7-0D0C-4242-B71F-E44A84040098}" ShortID="1002491740">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Music" ID="{D72B7F10-2E51-4F1E-ADCF-6A5DA70E750D}" WorkUnitID="{C65BA963-33D1-4FDF-8A87-503A9FBF1A48}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>
