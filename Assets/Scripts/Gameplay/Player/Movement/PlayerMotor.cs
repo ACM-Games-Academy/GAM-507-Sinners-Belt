@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine.XR;
+using System.Collections;
 public class PlayerMotor : MonoBehaviour
 {
     [Header("References")]
@@ -265,12 +266,32 @@ public class PlayerMotor : MonoBehaviour
         if (dashDirection == Vector3.zero)
             dashDirection = transform.forward;
 
-        controller.Move(dashDirection.normalized * dashDistance);
+        StartCoroutine(SmoothDash(dashDirection.normalized * dashDistance));
 
         // small cooldown buffer between dashes (for spam control)
         lastDashTime = Time.time;
-       
     }
+
+    private IEnumerator SmoothDash(Vector3 totalMovement)
+    {
+        float duration = 0.12f;  // controls how smooth / quick the dash is
+        float elapsed = 0f;
+
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos + totalMovement;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            Vector3 newPos = Vector3.Lerp(startPos, endPos, t);
+            controller.Move(newPos - transform.position);
+
+            yield return null;
+        }
+    }
+
     private void HandleCrouch()
     {
 
