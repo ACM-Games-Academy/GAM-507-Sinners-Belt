@@ -1,5 +1,21 @@
+State Group	ID	Name			Wwise Object Path	Notes
+	4055567060	Menu_Music			\Default Work Unit\Menu_Music	
+
+State	ID	Name	State Group			Notes
+	89505537	Gameplay	Menu_Music			
+	748895195	None	Menu_Music			
+	2607556080	Menu	Menu_Music			
+
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
+
+Auxiliary Bus	ID	Name			Wwise Object Path	Notes
+	1340358820	RoomReverb			\Default Work Unit\Master Audio Bus\RoomReverb	
+	3480504095	Dome_Reverb			\Default Work Unit\Master Audio Bus\Dome_Reverb	
+
+Effect plug-ins	ID	Name	Type				Notes
+	3164629247	Holy	Wwise RoomVerb			
+	3451596814	Hall_Medium	Wwise RoomVerb			
 
 Audio Devices	ID	Name	Type				Notes
 	2317455096	No_Output	No Output			

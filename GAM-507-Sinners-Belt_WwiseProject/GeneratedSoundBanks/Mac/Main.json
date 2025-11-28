@@ -10,11 +10,19 @@
     "Type": "User",
     "GUID": "{7208E510-6ECA-4FF4-A783-925973B32422}",
     "Language": "SFX",
-    "Hash": "{823D9359-0896-FF20-0EBC-B140C8B71E2A}",
+    "Hash": "{E5CA404E-C7E0-27E6-E085-BB2EE1C7C09B}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Main",
     "ShortName": "Main",
     "Path": "Main.bnk",
     "Media": [
+     {
+      "Id": "34267215",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "The Credits.wav",
+      "CachePath": "75/{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem"
+     },
      {
       "Id": "43063051",
       "Language": "SFX",
@@ -32,6 +40,14 @@
       "CachePath": "94/{940AE926-E905-6279-D3B4-7685AD4948C4}.wem"
      },
      {
+      "Id": "62493604",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "SFXW001_indoor_roomtone_entrance hall.wav",
+      "CachePath": "DD/{DD0AA30D-382E-0372-7A02-BDBACC46998B}.wem"
+     },
+     {
       "Id": "95498405",
       "Language": "SFX",
       "Streaming": "false",
@@ -45,7 +61,39 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Gun SFX.wav",
-      "CachePath": "C3/{C37DC01E-ABF8-455B-1016-82769F1C4041}.wem"
+      "CachePath": "FD/{FD13AA11-2229-708C-2A74-601A4DD09FE3}.wem"
+     },
+     {
+      "Id": "229210670",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Collect Crystal.wav",
+      "CachePath": "C7/{C731E347-EAF5-97E3-E8E5-8BEBB0376AF4}.wem"
+     },
+     {
+      "Id": "285017188",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Bare Step Metal Hard A.wav",
+      "CachePath": "55/{55FC2882-408A-D8A6-ED55-0918F1C25ADC}.wem"
+     },
+     {
+      "Id": "301856328",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "SCI-FI Weapon Shot (Dry).wav",
+      "CachePath": "69/{69836123-F723-CF08-F1D4-9BD3ED97257E}.wem"
+     },
+     {
+      "Id": "312795301",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Bare Step Metal Hard D.wav",
+      "CachePath": "1D/{1D0F5262-5BE4-B49C-3A83-98F1E792DADC}.wem"
      },
      {
       "Id": "353987337",
@@ -56,12 +104,28 @@
       "CachePath": "98/{98ECA332-9B0B-B3D0-D6CE-D08D43D27F72}.wem"
      },
      {
+      "Id": "397344637",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Bare Step Metal Hard B.wav",
+      "CachePath": "62/{6268F09C-51FD-E3E7-6EF4-FA2CB14786D6}.wem"
+     },
+     {
       "Id": "520935248",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "AAA Game Door Close.wav",
       "CachePath": "40/{4004FD0E-F855-839B-34AE-56BFAC8F8BDB}.wem"
+     },
+     {
+      "Id": "551062134",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Dessert_Menu.wav",
+      "CachePath": "76/{76AE245E-E1B1-1483-EB09-09683CA36DED}.wem"
      },
      {
       "Id": "592486134",
@@ -72,12 +136,36 @@
       "CachePath": "8E/{8E0A16D6-B538-B1BB-A2B8-8013116694B0}.wem"
      },
      {
+      "Id": "608558227",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Enemy Startle Roar.wav",
+      "CachePath": "D3/{D307E33D-311E-156F-DA98-A17B66FC57B7}.wem"
+     },
+     {
       "Id": "641502160",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Shoe Step Metal Hard E.wav",
       "CachePath": "7F/{7F0C8C17-9D33-2FF6-F3C1-A98926571B7F}.wem"
+     },
+     {
+      "Id": "805935089",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Bare Step Metal Hard C.wav",
+      "CachePath": "C6/{C641EC08-D55C-00AC-16B1-A7E4907A760B}.wem"
+     },
+     {
+      "Id": "931364597",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Bare Step Metal Hard E.wav",
+      "CachePath": "34/{342EF350-7BAE-A516-5FD6-B80BE1E491B0}.wem"
      },
      {
       "Id": "1034828718",
@@ -88,7 +176,31 @@
       "CachePath": "B1/{B124193B-6D21-B3D3-B0B8-E4615D90648F}.wem"
      }
     ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "1674078407",
+       "Name": "Chorus_Like",
+       "ObjectPath": "\\Effects\\Factory Effects\\Flanger\\Chorus\\Chorus_Like",
+       "GUID": "{EEE0CC86-8CA5-4DBC-A6B7-568FCB26F290}",
+       "LibName": "Wwise Flanger",
+       "LibId": "8192003"
+      }
+     ]
+    },
     "Events": [
+     {
+      "Id": "278617630",
+      "Name": "Play_Ambience",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Ambience",
+      "GUID": "{EEAA1330-1A24-445D-B25D-922C08A00D43}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "62493604"
+       }
+      ]
+     },
      {
       "Id": "2292458263",
       "Name": "Play_Door_Close",
@@ -120,6 +232,62 @@
       ]
      },
      {
+      "Id": "3046156865",
+      "Name": "Play_Enemy_Death",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Enemy_Death",
+      "GUID": "{4D9736BD-0C3A-43BC-9157-450B1FF1FB6D}",
+      "MaxAttenuation": "20",
+      "DurationType": "OneShot",
+      "DurationMin": "2.2",
+      "DurationMax": "2.2",
+      "MediaRefs": [
+       {
+        "Id": "608558227"
+       }
+      ]
+     },
+     {
+      "Id": "59336502",
+      "Name": "Play_Enemy_Footsteps",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Enemy_Footsteps",
+      "GUID": "{9B7F8764-C7EE-4798-8F6E-34DB5ECF044F}",
+      "MaxAttenuation": "20",
+      "DurationType": "OneShot",
+      "DurationMin": "0.88124716",
+      "DurationMax": "0.88124716",
+      "MediaRefs": [
+       {
+        "Id": "285017188"
+       },
+       {
+        "Id": "312795301"
+       },
+       {
+        "Id": "397344637"
+       },
+       {
+        "Id": "805935089"
+       },
+       {
+        "Id": "931364597"
+       }
+      ]
+     },
+     {
+      "Id": "2380706777",
+      "Name": "Play_Enemy_Gun",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Enemy_Gun",
+      "GUID": "{1E389CBC-3A55-4994-BBB1-898A7672EC17}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.5439025",
+      "DurationMax": "0.5439025",
+      "MediaRefs": [
+       {
+        "Id": "301856328"
+       }
+      ]
+     },
+     {
       "Id": "3854155799",
       "Name": "Play_Footsteps",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Footsteps",
@@ -146,6 +314,50 @@
       ]
      },
      {
+      "Id": "2481433679",
+      "Name": "Play_GameplayMusic",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_GameplayMusic",
+      "GUID": "{0DEFDB53-96B8-45F6-92C6-1B4EAB0D9D0D}",
+      "DurationType": "Infinite",
+      "SwitchContainers": [
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "4055567060",
+         "Id": "2607556080",
+         "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "551062134"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "4055567060",
+         "Id": "89505537",
+         "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "34267215"
+         }
+        ]
+       }
+      ],
+      "ActionSetState": [
+       {
+        "GroupId": "4055567060",
+        "Id": "89505537",
+        "Name": "Gameplay",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Gameplay",
+        "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+       }
+      ]
+     },
+     {
       "Id": "2622995180",
       "Name": "Play_Gun",
       "ObjectPath": "\\Events\\Default Work Unit\\Play_Gun",
@@ -156,6 +368,27 @@
       "MediaRefs": [
        {
         "Id": "104268671"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "1674078407"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "3850586852",
+      "Name": "Play_ObjectiveCollected",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_ObjectiveCollected",
+      "GUID": "{E6C04AB4-F631-43EF-9910-74158C2B2020}",
+      "DurationType": "OneShot",
+      "DurationMin": "4.688458",
+      "DurationMax": "4.688458",
+      "MediaRefs": [
+       {
+        "Id": "229210670"
        }
       ]
      },
@@ -173,9 +406,37 @@
        }
       ]
      }
+    ],
+    "StateGroups": [
+     {
+      "Id": "4055567060",
+      "Name": "Menu_Music",
+      "ObjectPath": "\\States\\Default Work Unit\\Menu_Music",
+      "GUID": "{407473A1-B584-4859-8CBA-DBC6ED3B2D4A}",
+      "States": [
+       {
+        "Id": "89505537",
+        "Name": "Gameplay",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Gameplay",
+        "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+       },
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\None",
+        "GUID": "{962BECE9-A1F4-42E0-8F54-2A76E8077313}"
+       },
+       {
+        "Id": "2607556080",
+        "Name": "Menu",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Menu",
+        "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{19415112-B327-5C56-6E1C-DE78AC470EF7}"
+  "FileHash": "{CCEF2FF0-480B-CD78-17F1-B185CCA8440C}"
  }
 }

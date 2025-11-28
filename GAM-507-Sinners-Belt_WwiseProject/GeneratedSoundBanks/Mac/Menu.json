@@ -1,0 +1,113 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Mac",
+  "BasePlatform": "Mac",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "154",
+  "SoundBanks": [
+   {
+    "Id": "2607556080",
+    "Type": "User",
+    "GUID": "{9AA74B09-7027-40FD-823D-557A4646ACEA}",
+    "Language": "SFX",
+    "Hash": "{3422FE6A-BD52-735E-659B-EB352F031A99}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\Menu",
+    "ShortName": "Menu",
+    "Path": "Menu.bnk",
+    "Media": [
+     {
+      "Id": "34267215",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "The Credits.wav",
+      "CachePath": "75/{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem"
+     },
+     {
+      "Id": "551062134",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Dessert_Menu.wav",
+      "CachePath": "76/{76AE245E-E1B1-1483-EB09-09683CA36DED}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2570041344",
+      "Name": "Play_MenuMusic",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_MenuMusic",
+      "GUID": "{5DC69D17-4F4C-4CFA-89D9-1A3FA6E24274}",
+      "DurationType": "Infinite",
+      "SwitchContainers": [
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "4055567060",
+         "Id": "2607556080",
+         "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "551062134"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "4055567060",
+         "Id": "89505537",
+         "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "34267215"
+         }
+        ]
+       }
+      ],
+      "ActionSetState": [
+       {
+        "GroupId": "4055567060",
+        "Id": "2607556080",
+        "Name": "Menu",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Menu",
+        "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+       }
+      ]
+     }
+    ],
+    "StateGroups": [
+     {
+      "Id": "4055567060",
+      "Name": "Menu_Music",
+      "ObjectPath": "\\States\\Default Work Unit\\Menu_Music",
+      "GUID": "{407473A1-B584-4859-8CBA-DBC6ED3B2D4A}",
+      "States": [
+       {
+        "Id": "89505537",
+        "Name": "Gameplay",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Gameplay",
+        "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+       },
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\None",
+        "GUID": "{962BECE9-A1F4-42E0-8F54-2A76E8077313}"
+       },
+       {
+        "Id": "2607556080",
+        "Name": "Menu",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Menu",
+        "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{6724BD04-1051-1376-C6A6-D6482F1D0E88}"
+ }
+}

@@ -10,11 +10,29 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{E8C73C05-9AC5-A17E-EA11-491BBCB2A45E}",
+    "Hash": "{38B1A451-D205-F229-2FC8-2D08F1DCA742}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3164629247",
+       "Name": "Holy",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Cathedrals\\Holy",
+       "GUID": "{CC7B8638-C670-4AD5-B3FB-331EA81037F6}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
+      {
+       "Id": "3451596814",
+       "Name": "Hall_Medium",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Medium",
+       "GUID": "{50286348-176A-4235-9E4C-CA5F73D87818}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
+     ],
      "AudioDevices": [
       {
        "Id": "2317455096",
@@ -41,9 +59,65 @@
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus",
       "GUID": "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"
      }
+    ],
+    "AuxBusses": [
+     {
+      "Id": "1340358820",
+      "Name": "RoomReverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\RoomReverb",
+      "GUID": "{C82D60CD-8E8B-472F-A245-A494C29C4654}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3451596814"
+        }
+       ]
+      }
+     },
+     {
+      "Id": "3480504095",
+      "Name": "Dome_Reverb",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\Dome_Reverb",
+      "GUID": "{6B90A384-0FC2-44BC-BD87-84F2E3B266CA}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3164629247"
+        }
+       ]
+      }
+     }
+    ],
+    "StateGroups": [
+     {
+      "Id": "4055567060",
+      "Name": "Menu_Music",
+      "ObjectPath": "\\States\\Default Work Unit\\Menu_Music",
+      "GUID": "{407473A1-B584-4859-8CBA-DBC6ED3B2D4A}",
+      "States": [
+       {
+        "Id": "89505537",
+        "Name": "Gameplay",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Gameplay",
+        "GUID": "{16DFC28A-2DE0-40B9-9DDD-891779EC695C}"
+       },
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\None",
+        "GUID": "{962BECE9-A1F4-42E0-8F54-2A76E8077313}"
+       },
+       {
+        "Id": "2607556080",
+        "Name": "Menu",
+        "ObjectPath": "\\States\\Default Work Unit\\Menu_Music\\Menu",
+        "GUID": "{AFBC40E8-B77D-48BF-9CE7-2536B42E7812}"
+       }
+      ]
+     }
     ]
    }
   ],
-  "FileHash": "{4FFD842B-243A-C39A-DFFB-D8081524B584}"
+  "FileHash": "{1C92791F-6AB1-BF5E-9967-679426B220E2}"
  }
 }

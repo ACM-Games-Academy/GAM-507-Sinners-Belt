@@ -4,6 +4,9 @@
 		<WorkUnit Name="Default Work Unit" ID="{A13C2BF0-5A1B-4A93-966B-5BBBBF39541F}" PersistMode="Standalone">
 			<ChildrenList>
 				<Sound Name="Gun SFX" ID="{C3607E57-065D-4780-8FE2-3C1F39450179}" ShortID="837103758">
+					<PropertyList>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
@@ -15,6 +18,7 @@
 					<ChildrenList>
 						<AudioFileSource Name="Gun SFX" ID="{217F6900-0977-4393-970A-8CA8E3E882D9}">
 							<PropertyList>
+								<Property Name="FadeOutDuration" Type="Real64" Value="0.0243582267027635"/>
 								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
 								<Property Name="TrimEnd" Type="Real64" Value="0.320326456628163"/>
 							</PropertyList>
@@ -25,11 +29,29 @@
 							</MediaIDList>
 						</AudioFileSource>
 					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Effects">
+							<Reference>
+								<Local>
+									<EffectSlot Name="" ID="{0C785D24-25F2-4F44-9F84-05C53160D8DD}" ShortID="407107379">
+										<ReferenceList>
+											<Reference Name="Effect" PluginName="Wwise Flanger" CompanyID="0" PluginID="125" PluginType="3">
+												<ObjectRef Name="Chorus_Like" ID="{EEE0CC86-8CA5-4DBC-A6B7-568FCB26F290}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
 					<ActiveSourceList>
 						<ActiveSource Name="Gun SFX" ID="{217F6900-0977-4393-970A-8CA8E3E882D9}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
 				<RandomSequenceContainer Name="Footsteps" ID="{A5EAD68B-D25D-41EE-A433-F29FCC74D847}" ShortID="812274000">
+					<PropertyList>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
@@ -393,6 +415,409 @@
 					</ChildrenList>
 					<ActiveSourceList>
 						<ActiveSource Name="Door Close" ID="{4BD81320-D0C7-48B7-8D04-21E4A656C5A1}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<RandomSequenceContainer Name="Enemy Footsteps" ID="{2C8B5F30-0D0E-4F95-BA8D-4418282735A8}" ShortID="665352828">
+					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<Custom>
+								<Attenuation Name="Enemy" ID="{EEE8CB52-46DA-4E17-ABBC-688311043E00}" ShortID="798336758">
+									<PropertyList>
+										<Property Name="RadiusMax" Type="Real64" Value="20"/>
+									</PropertyList>
+									<CurveUsageInfoList>
+										<VolumeDryUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+												<Curve Name="VolumeDry" ID="{7E5C660C-CB56-4F33-9376-2A994EC906BA}">
+													<PropertyList>
+														<Property Name="Flags" Type="int32" Value="3"/>
+													</PropertyList>
+													<PointList>
+														<Point>
+															<XPos>0</XPos>
+															<YPos>0</YPos>
+															<Flags>5</Flags>
+														</Point>
+														<Point>
+															<XPos>20</XPos>
+															<YPos>-200</YPos>
+															<Flags>37</Flags>
+														</Point>
+													</PointList>
+												</Curve>
+											</CurveUsageInfo>
+										</VolumeDryUsage>
+										<VolumeWetGameUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetGameUsage>
+										<VolumeWetUserUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetUserUsage>
+										<LowPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</LowPassFilterUsage>
+										<HighPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</HighPassFilterUsage>
+										<SpreadUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</SpreadUsage>
+										<FocusUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</FocusUsage>
+										<ObstructionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionVolumeUsage>
+										<ObstructionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionLPFUsage>
+										<ObstructionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionHPFUsage>
+										<OcclusionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionVolumeUsage>
+										<OcclusionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionLPFUsage>
+										<OcclusionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionHPFUsage>
+										<DiffractionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionVolumeUsage>
+										<DiffractionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionLPFUsage>
+										<DiffractionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionHPFUsage>
+										<TransmissionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionVolumeUsage>
+										<TransmissionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionLPFUsage>
+										<TransmissionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionHPFUsage>
+									</CurveUsageInfoList>
+								</Attenuation>
+							</Custom>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<Sound Name="Bare Step Metal Hard A" ID="{3AC7887F-AAB7-4366-88B5-6C859D983AB7}" ShortID="806739152">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Bare Step Metal Hard A" ID="{843A9363-43E2-4D49-8F9E-B502367C1EFA}">
+									<Language>SFX</Language>
+									<AudioFile>Bare Step Metal Hard A.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="285017188"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Bare Step Metal Hard A" ID="{843A9363-43E2-4D49-8F9E-B502367C1EFA}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Bare Step Metal Hard B" ID="{87A030D3-06D5-42F4-8752-5DE1964A20CE}" ShortID="1010197230">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Bare Step Metal Hard B" ID="{8DE1952A-6431-4B73-AA5A-04DC9F21A20B}">
+									<Language>SFX</Language>
+									<AudioFile>Bare Step Metal Hard B.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="397344637"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Bare Step Metal Hard B" ID="{8DE1952A-6431-4B73-AA5A-04DC9F21A20B}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Bare Step Metal Hard C" ID="{05D5EF70-FEF0-43EE-B78E-D911A37B7728}" ShortID="659757959">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Bare Step Metal Hard C" ID="{6714061B-F4C4-4676-8129-9AC8F811D9F6}">
+									<Language>SFX</Language>
+									<AudioFile>Bare Step Metal Hard C.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="805935089"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Bare Step Metal Hard C" ID="{6714061B-F4C4-4676-8129-9AC8F811D9F6}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Bare Step Metal Hard D" ID="{B55DA76B-8F46-4A43-A49F-7C101F899CC0}" ShortID="68699423">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Bare Step Metal Hard D" ID="{AEB09494-3EB4-4236-9A7D-1B3C9EFC995A}">
+									<Language>SFX</Language>
+									<AudioFile>Bare Step Metal Hard D.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="312795301"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Bare Step Metal Hard D" ID="{AEB09494-3EB4-4236-9A7D-1B3C9EFC995A}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Bare Step Metal Hard E" ID="{130A59BA-832E-4E0F-BAEE-1AAD631BEB61}" ShortID="920690358">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Bare Step Metal Hard E" ID="{B383B1DA-E6C2-4C59-A1C3-02CE303AC81E}">
+									<Language>SFX</Language>
+									<AudioFile>Bare Step Metal Hard E.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="931364597"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Bare Step Metal Hard E" ID="{B383B1DA-E6C2-4C59-A1C3-02CE303AC81E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</RandomSequenceContainer>
+				<Sound Name="Enemy Death" ID="{C575F989-6625-4808-BAAE-3296329837CF}" ShortID="614561428">
+					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-6</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<Custom>
+								<Attenuation Name="Enemy Death" ID="{3E3790A4-A664-4F0C-A10C-459DBD2C8FA8}" ShortID="1018030597">
+									<PropertyList>
+										<Property Name="RadiusMax" Type="Real64" Value="20"/>
+									</PropertyList>
+									<CurveUsageInfoList>
+										<VolumeDryUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="Custom">
+												<Curve Name="VolumeDry" ID="{F461F6F7-960A-4C2D-AFDC-EDC5A53EECA4}">
+													<PropertyList>
+														<Property Name="Flags" Type="int32" Value="3"/>
+													</PropertyList>
+													<PointList>
+														<Point>
+															<XPos>0</XPos>
+															<YPos>0</YPos>
+															<Flags>5</Flags>
+														</Point>
+														<Point>
+															<XPos>20</XPos>
+															<YPos>-200</YPos>
+															<Flags>37</Flags>
+														</Point>
+													</PointList>
+												</Curve>
+											</CurveUsageInfo>
+										</VolumeDryUsage>
+										<VolumeWetGameUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetGameUsage>
+										<VolumeWetUserUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseVolumeDry"/>
+										</VolumeWetUserUsage>
+										<LowPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</LowPassFilterUsage>
+										<HighPassFilterUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</HighPassFilterUsage>
+										<SpreadUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</SpreadUsage>
+										<FocusUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="None"/>
+										</FocusUsage>
+										<ObstructionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionVolumeUsage>
+										<ObstructionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionLPFUsage>
+										<ObstructionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</ObstructionHPFUsage>
+										<OcclusionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionVolumeUsage>
+										<OcclusionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionLPFUsage>
+										<OcclusionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</OcclusionHPFUsage>
+										<DiffractionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionVolumeUsage>
+										<DiffractionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionLPFUsage>
+										<DiffractionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</DiffractionHPFUsage>
+										<TransmissionVolumeUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionVolumeUsage>
+										<TransmissionLPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionLPFUsage>
+										<TransmissionHPFUsage>
+											<CurveUsageInfo Platform="Linked" CurveToUse="UseProject"/>
+										</TransmissionHPFUsage>
+									</CurveUsageInfoList>
+								</Attenuation>
+							</Custom>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Enemy Death" ID="{756B0523-2C57-43D4-A123-3CB9C728B5A8}">
+							<Language>SFX</Language>
+							<AudioFile>Enemy Startle Roar.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="608558227"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Enemy Death" ID="{756B0523-2C57-43D4-A123-3CB9C728B5A8}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="Enemy Gun" ID="{ADB41E4E-40D0-4D75-A108-CDC863D23E32}" ShortID="280365096">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Enemy Gun" ID="{AB243BC9-9DCD-4B88-AA5F-57A1A82965A2}">
+							<PropertyList>
+								<Property Name="FadeOutDuration" Type="Real64" Value="0.278497907978769"/>
+								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+								<Property Name="TrimBegin" Type="Real64" Value="0.0244905223039268"/>
+								<Property Name="TrimEnd" Type="Real64" Value="0.568393011956002"/>
+							</PropertyList>
+							<Language>SFX</Language>
+							<AudioFile>SCI-FI Weapon Shot (Dry).wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="301856328"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Enemy Gun" ID="{AB243BC9-9DCD-4B88-AA5F-57A1A82965A2}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="Ambience" ID="{7905C0DB-BA5C-48BB-A3DA-310D671ADD6B}" ShortID="233141941">
+					<PropertyList>
+						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="SFXW001_indoor_roomtone_entrance hall" ID="{A6EF0C4D-6AB2-457E-9ECC-A55DA31E2728}">
+							<Language>SFX</Language>
+							<AudioFile>SFXW001_indoor_roomtone_entrance hall.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="62493604"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="SFXW001_indoor_roomtone_entrance hall" ID="{A6EF0C4D-6AB2-457E-9ECC-A55DA31E2728}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="ObjectiveCollected" ID="{924F2AF4-A12F-4946-AC0F-EBC14530D90D}" ShortID="249732375">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{7CFE7156-429A-49BB-A249-56B2163D711C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8863AC91-45DA-469F-A46D-4D514F429B43}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Collect Crystal" ID="{C84FFFA1-11CB-40A5-9960-53B2C986C89D}">
+							<Language>SFX</Language>
+							<AudioFile>Collect Crystal.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="229210670"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="Collect Crystal" ID="{C84FFFA1-11CB-40A5-9960-53B2C986C89D}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
 			</ChildrenList>

@@ -1,18 +1,46 @@
 Event	ID	Name			Wwise Object Path	Notes
+	59336502	Play_Enemy_Footsteps			\Default Work Unit\Play_Enemy_Footsteps	
+	278617630	Play_Ambience			\Default Work Unit\Play_Ambience	
 	1660008929	Play_Door_Open			\Default Work Unit\Play_Door_Open	
 	1910506537	Play_Reload			\Default Work Unit\Play_Reload	
 	2292458263	Play_Door_Close			\Default Work Unit\Play_Door_Close	
+	2380706777	Play_Enemy_Gun			\Default Work Unit\Play_Enemy_Gun	
+	2481433679	Play_GameplayMusic			\Default Work Unit\Play_GameplayMusic	
 	2622995180	Play_Gun			\Default Work Unit\Play_Gun	
+	3046156865	Play_Enemy_Death			\Default Work Unit\Play_Enemy_Death	
+	3850586852	Play_ObjectiveCollected			\Default Work Unit\Play_ObjectiveCollected	
 	3854155799	Play_Footsteps			\Default Work Unit\Play_Footsteps	
 
+State Group	ID	Name			Wwise Object Path	Notes
+	4055567060	Menu_Music			\Default Work Unit\Menu_Music	
+
+State	ID	Name	State Group			Notes
+	89505537	Gameplay	Menu_Music			
+	748895195	None	Menu_Music			
+	2607556080	Menu	Menu_Music			
+
+Effect plug-ins	ID	Name	Type				Notes
+	1674078407	Chorus_Like	Wwise Flanger			
+
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	34267215	The Credits	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\75\{7541C5A8-5252-4B3F-5815-6FDF29999659}.wem		\Interactive Music Hierarchy\Default Work Unit\Music\Gameplay\The Credits\The Credits		7198952
 	43063051	Shoe Step Metal Hard A	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\F3\{F3BCEE7B-44D7-7B5F-E2E9-D84D58B736CC}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard A		110668
 	55383908	Shoe Step Metal Hard B	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\94\{940AE926-E905-6279-D3B4-7685AD4948C4}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard B		123672
+	62493604	Ambience	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\DD\{DD0AA30D-382E-0372-7A02-BDBACC46998B}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Ambience		6480992
 	95498405	Reload	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\BD\{BD484311-867D-ECE9-EB53-A15D11241A29}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Reload		242060
-	104268671	Gun SFX	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\C3\{C37DC01E-ABF8-455B-1016-82769F1C4041}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Gun SFX		56600
+	104268671	Gun SFX	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\FD\{FD13AA11-2229-708C-2A74-601A4DD09FE3}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Gun SFX		56600
+	229210670	ObjectiveCollected	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\C7\{C731E347-EAF5-97E3-E8E5-8BEBB0376AF4}.wem		\Actor-Mixer Hierarchy\Default Work Unit\ObjectiveCollected		827140
+	285017188	Bare Step Metal Hard A	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\55\{55FC2882-408A-D8A6-ED55-0918F1C25ADC}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Footsteps\Bare Step Metal Hard A		155548
+	301856328	Enemy Gun	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\69\{69836123-F723-CF08-F1D4-9BD3ED97257E}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Gun		104524
+	312795301	Bare Step Metal Hard D	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\1D\{1D0F5262-5BE4-B49C-3A83-98F1E792DADC}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Footsteps\Bare Step Metal Hard D		155548
 	353987337	Shoe Step Metal Hard C	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\98\{98ECA332-9B0B-B3D0-D6CE-D08D43D27F72}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard C		135052
+	397344637	Bare Step Metal Hard B	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\62\{6268F09C-51FD-E3E7-6EF4-FA2CB14786D6}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Footsteps\Bare Step Metal Hard B		155548
 	520935248	Door Close	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\40\{4004FD0E-F855-839B-34AE-56BFAC8F8BDB}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Door Close		354660
+	551062134	Dessert_Menu	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\76\{76AE245E-E1B1-1483-EB09-09683CA36DED}.wem		\Interactive Music Hierarchy\Default Work Unit\Music\Menu\Dessert_Menu\Dessert_Menu		25225312
 	592486134	Door Open	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\8E\{8E0A16D6-B538-B1BB-A2B8-8013116694B0}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Door Open		529296
+	608558227	Enemy Death	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\D3\{D307E33D-311E-156F-DA98-A17B66FC57B7}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Death		388176
 	641502160	Shoe Step Metal Hard E	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\7F\{7F0C8C17-9D33-2FF6-F3C1-A98926571B7F}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard E		153704
+	805935089	Bare Step Metal Hard C	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\C6\{C641EC08-D55C-00AC-16B1-A7E4907A760B}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Footsteps\Bare Step Metal Hard C		155548
+	931364597	Bare Step Metal Hard E	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\34\{342EF350-7BAE-A516-5FD6-B80BE1E491B0}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Enemy Footsteps\Bare Step Metal Hard E		155612
 	1034828718	Shoe Step Metal Hard D	C:\Users\cpm27\Desktop\GAM-501\Source\GAM-507-Sinners-Belt\GAM-507-Sinners-Belt_WwiseProject\.cache\B1\{B124193B-6D21-B3D3-B0B8-E4615D90648F}.wem		\Actor-Mixer Hierarchy\Default Work Unit\Footsteps\Shoe Step Metal Hard D		118192
 
